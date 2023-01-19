@@ -1,4 +1,4 @@
-package com.mogudiandian.util.collector;
+package com.mogudiandian.util.stream;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.*;

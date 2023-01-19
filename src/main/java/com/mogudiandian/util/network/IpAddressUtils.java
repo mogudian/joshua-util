@@ -1,4 +1,4 @@
-package com.mogudiandian.util.ip;
+package com.mogudiandian.util.network;
 
 import java.net.DatagramSocket;
 import java.net.Inet4Address;

@@ -4,7 +4,107 @@
 
 ## 工具说明
 
-`TODO`
+### bean
+#### BeanCopyUtils 用于进行对象属性的拷贝
+```java
+// 两个已有对象直接拷贝属性
+BeanCopyUtils.copyProperties(src, target);
+
+// 拷贝对象的属性到新对象中并返回新对象
+X x = BeanCopyUtils.copyPropertiesAndGet(src, new X());
+
+// 用指定的方法构造新对象并拷贝对象的属性到新对象中并返回新对象
+X x = BeanCopyUtils.copyPropertiesAndGet(src, X::new);
+```
+
+### codec
+#### Base58 提供Base58编解码
+```java
+// 编码
+String str = "abc";
+String base58 = Base58.encode(str.toBytes());
+
+// 解码
+byte[] bytes = Base58.decode(base58);
+String str = new String(bytes);
+```
+
+#### MD5 提供MD5摘要算法
+```java
+// 摘要
+String str = "abc";
+String md5 = MD5.digest(str);
+```
+
+### compressor
+#### GzipCompressor
+#### SnappyCompressor
+#### ZstdCompressor
+
+### date
+#### DateParser
+#### DateUtils
+#### LocalDateUtils
+
+### excel
+#### ExcelParser
+
+### html
+#### HTMLUtils
+
+### image
+#### ImageUtils
+
+### io
+#### ByteBufferInputStream
+#### ByteBufferOutputStream
+
+### javac
+#### DynamicCompiler
+
+### jdbc
+#### JdbcUtils
+
+### json.fastjson
+#### FastJsonUtils
+#### JSONArrayBuilder
+#### JSONArrayIterable
+#### JSONObjectBuilder
+#### JSONPathUtils
+#### LongArrayOmitFilter
+#### LongStringOmitFilter
+
+### json.jackson
+#### BigDecimal2BitsSerializer
+#### BigDecimal4BitsSerializer
+#### JacksonUtils
+
+### map
+#### HashMapBuilder
+
+### mask
+#### MaskUtils
+
+### network
+#### DownloadUtils
+#### IpAddressUtils
+
+### random
+#### UuidUtils
+
+### regex
+#### RegexUtils
+
+### stream
+#### RandomKCollector
+#### StreamUtils
+
+### validator
+#### BaseValidator
+
+### 未分包
+#### EnumGetter
+#### ObjectRelationMatcher
 
 ## 依赖三方库
 
