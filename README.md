@@ -86,6 +86,7 @@ String md5 = MD5.digest(str);
 #### MaskUtils
 
 ### network
+#### ClientIpUtils
 #### DownloadUtils
 #### IpAddressUtils
 
@@ -122,6 +123,7 @@ tika | 2.6.0   | 只用到了预测文件类型
 easyexcel | 2.2.7 | alibaba出品的简易excel解析工具 
 zstd | 1.5.2-4 | google出品的压缩工具 
 snappy | 1.1.8.4 | facebook出品的压缩工具 
+servlet-api | 3.1.0 | servlet相关依赖 
 lombok | 1.18.16 | 
 
 ## 使用前准备
