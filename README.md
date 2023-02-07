@@ -109,22 +109,22 @@ String md5 = MD5.digest(str);
 
 ## 依赖三方库
 
- 依赖           | 版本号           | 说明  
---------------|---------------|-----
-spring | 5.2.12.RELEASE | 只用到了里面集成的cglib 
-fastjson | 1.2.73        |  
-jackson | 2.11.3 |  
-commons-lang3 | 3.11          |  
-commons-collections4 | 4.4           |  
-guava | 29.0-jre      |  
-slf4j | 1.7.30    |  
-hibernate-validator | 6.1.6.Final |  
-tika | 2.6.0   | 只用到了预测文件类型 
-easyexcel | 2.2.7 | alibaba出品的简易excel解析工具 
-zstd | 1.5.2-4 | google出品的压缩工具 
-snappy | 1.1.8.4 | facebook出品的压缩工具 
-servlet-api | 3.1.0 | servlet相关依赖 
-lombok | 1.18.16 | 
+| 依赖                   | 版本号            | 说明                    |
+|----------------------|----------------|-----------------------|
+| spring               | 5.2.12.RELEASE | 只用到了里面集成的cglib        |
+| fastjson             | 1.2.73         |                       |
+| jackson              | 2.11.3         |                       |
+| commons-lang3        | 3.11           |                       |
+| commons-collections4 | 4.4            |                       |
+| guava                | 29.0-jre       |                       |
+| slf4j                | 1.7.30         |                       |
+| hibernate-validator  | 6.1.6.Final    |                       |
+| tika                 | 2.6.0          | 只用到了预测文件类型            |
+| easyexcel            | 2.2.7          | alibaba出品的简易excel解析工具 |
+| zstd                 | 1.5.2-4        | google出品的压缩工具         |
+| snappy               | 1.1.8.4        | facebook出品的压缩工具       |
+| servlet-api          | 3.1.0          | servlet相关依赖           |
+| lombok               | 1.18.16        |                       |
 
 ## 使用前准备
 
