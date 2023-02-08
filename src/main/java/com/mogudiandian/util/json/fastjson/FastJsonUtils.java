@@ -18,25 +18,6 @@ public final class FastJsonUtils {
     }
 
     /**
-     * 使用省略长字符串方式将对象生成JSON字符串
-     * @param object 对象
-     * @return JSON字符串
-     */
-    public static String toJSONStringWithLongStringOmit(Object object) {
-        return JSON.toJSONString(object, new LongStringOmitFilter());
-    }
-
-    /**
-     * 使用省略长字符串方式将对象生成JSON字符串
-     * @param object 对象
-     * @param length 保留长度
-     * @return JSON字符串return JSON.toJSONString(object, new LongStringOmitFilter(length));
-     */
-    public static String toJSONStringWithLongStringOmit(Object object, int length) {
-        return JSON.toJSONString(object, new LongStringOmitFilter(length));
-    }
-
-    /**
      * 判断一个类型是否为JSON的简单类型(非对象和集合)
      * @param clazz 类型
      * @return 返回true的场景为Boolean/Character/8种基本类型/枚举/字符串/数值/日期

@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * JDBC的工具
+ * JDBC的工具类
+ * 可以作为一个简易版的ORM使用
  * @author sunbo
  */
 public final class JdbcUtils {

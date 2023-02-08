@@ -6,7 +6,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
- * JDK8 LocalDate的工具
+ * JDK8 LocalDate的工具类
  *
  * @author sunbo
  */

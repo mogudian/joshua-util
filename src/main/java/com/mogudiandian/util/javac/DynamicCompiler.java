@@ -7,7 +7,8 @@ import java.util.Collections;
 import java.util.Optional;
 
 /**
- * 动态编译器
+ * Java动态编译器
+ * 注意：需要运行环境是JDK，不能是JRE(没有tools.jar)
  * @author sunbo
  */
 public final class DynamicCompiler {
