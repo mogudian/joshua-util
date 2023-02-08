@@ -37,75 +37,144 @@ String md5 = MD5.digest(str);
 ```
 
 ### compressor
-#### GzipCompressor
-#### SnappyCompressor
-#### ZstdCompressor
+#### GzipCompressor GZIP压缩器
+#### SnappyCompressor google snappy压缩器
+#### ZstdCompressor facebook z-standard压缩器
 
 ### date
-#### DateParser
-#### DateUtils
-#### LocalDateUtils
+#### DateParser 时间字符串解析器，效率高，并且不会抛异常
+#### LocalDateUtils JDK8 LocalDate的工具类
 
 ### excel
-#### ExcelParser
+#### ExcelParser Excel解析器
 
 ### html
-#### HTMLUtils
+#### HTMLUtils HTML工具类
 
 ### image
-#### ImageUtils
+#### ImageUtils 图片工具类
 
 ### io
-#### ByteBufferInputStream
-#### ByteBufferOutputStream
+#### ByteBufferInputStream 包装ByteBuffer的InputStream
+#### ByteBufferOutputStream 包装ByteBuffer的OutputStream
+#### ByteBufferUtils ByteBuffer的工具类
 
 ### javac
-#### DynamicCompiler
+#### DynamicCompiler Java动态编译器
 
 ### jdbc
-#### JdbcUtils
+#### JdbcUtils JDBC的工具类
 
 ### json.fastjson
-#### FastJsonUtils
-#### JSONArrayBuilder
-#### JSONArrayIterable
-#### JSONObjectBuilder
-#### JSONPathUtils
-#### LongArrayOmitFilter
-#### LongStringOmitFilter
+#### FastJsonUtils FastJSON的工具类
+#### JSONArrayBuilder 快速构造JSONArray
+```java
+JSONArray arr1 = JSONArrayBuilder.build(jsonObject);
+JSONArray arr2 = JSONArrayBuilder.build(jsonObject1, jsonObject2);
+...
+```
+#### JSONArrayIterable JSONArray的迭代器
+```java
+JSONArray jsonArray = ...;
+// 原来写法
+for (int i = 0; i < jsonArray.size(); i++) {
+    JSONObject jsonObject = jsonArray.getJSONObject(i);
+    ...
+}
+// 使用工具后的写法
+for (JSONObject jsonObject : new JSONArrayIterable<>(jsonArray, JSONObject.class)) {
+    ....
+}
+```
+#### JSONObjectBuilder 快速构造JSONObject
+```java
+JSONObject o1 = JSONObjectBuilder.build("a", 1);
+JSONObject o2 = JSONObjectBuilder.build("a", 1, "b", "2");
+...
+```
+#### JSONPathUtils JSONPath的工具类
+#### LongArrayOmitFilter 省略长数组的过滤器
+```java
+String str = JSON.toJSONString(jsonObject, new LongArrayOmitFilter(x));
+```
+#### LongStringOmitFilter 省略长字符串的过滤器
+```java
+String str = JSON.toJSONString(jsonObject, new LongStringOmitFilter(x));
+```
 
 ### json.jackson
-#### BigDecimal2BitsSerializer
-#### BigDecimal4BitsSerializer
-#### JacksonUtils
+#### BigDecimal2BitsSerializer BigDecimal使用jackson序列化保留两位小数
+#### BigDecimal4BitsSerializer BigDecimal使用jackson序列化保留四位小数
+#### JacksonUtils Jackson工具类
 
 ### map
-#### HashMapBuilder
+#### HashMapBuilder 快速构建HashMap
+```java
+Map<String, Integer> map1 = HashMapBuilder.build("a", 1);
+Map<String, String> map2 = HashMapBuilder.build("a", "1", "b", "2");
+...
+```
 
 ### mask
-#### MaskUtils
+#### MaskUtils 掩码脱敏工具类
 
 ### network
-#### ClientIpUtils
-#### DownloadUtils
-#### IpAddressUtils
+#### ClientIpUtils 客户端IP地址获取工具，考虑了反向代理的情况
+```java
+@Controller
+public class UserController {
+    @RequestMapping("/user/login")
+    public ApiResponse<String> login(HttpServletRequest request) {
+        String clientIp = ClientIpUtils.getClientIp(request);
+        System.out.println("client real ip is: " + clientIp);
+    }
+}
+
+```
+#### DownloadUtils 文件下载工具
+#### IpAddressUtils IP地址的工具类
 
 ### random
-#### UuidUtils
+#### UuidUtils UUID的工具类
 
 ### regex
-#### RegexUtils
+#### RegexUtils 正则工具类
 
 ### stream
-#### RandomKCollector
-#### StreamUtils
+#### RandomKCollector 实现RandomK的collector
+```java
+int[] arr = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+List<Integer> list = Arrays.stream(arr).boxed().collect(RandomKCollector.newInstance(6));
+System.out.println(list);
+```
+#### StreamUtils 流的工具类
 
 ### validator
-#### BaseValidator
+#### BaseValidator 基础校验器
 
 ### 未分包
-#### EnumGetter
-#### ObjectRelationMatcher
+#### EnumGetter 枚举工具类
+#### ObjectRelationMatcher 对象关系匹配器，特别适合不允许联表时的列表数据组装
+```java
+// 例如一个评论列表页，不只展示评论内容，还需要展示文章标题和内容
+List<CommentDTO> comments = commentService.query(condition);
+// 根据评论(CommentDTO)中的文章ID查询文章(ArticleDTO)并设置文章的标题和内容
+ObjectRelationMatcher<CommentDTO, Long, List<Long>, ArticleDTO, Long> matcher = new ObjectRelationMatcher<>(); <br/>
+matcher.setElements(comments)
+       .setElementIdentifierExtractor(CommentDTO::getArticleId)
+       .setIdentifierCollectorType(List.class)
+       .setBatchQueryMethod(articleService::queryByIds)
+       .setDataKeyGenerator(ArticleDTO::getId)
+       .setElementToKeyMapping(CommentDTO::getArticleId)
+       .match()
+       .processOneToOne((comment, article) -> {
+           comment.setArticleTitle(article.getTitle());
+           comment.setArticleContent(article.getContent());
+       }, comment -> {
+           comment.setArticleTitle("未知标题");
+           comment.setArticleContent("未知内容");
+       });
+```
 
 ## 依赖三方库
 
