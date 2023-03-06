@@ -38,11 +38,42 @@ String md5 = MD5.digest(str);
 
 ### compressor
 #### GzipCompressor GZIP压缩器
+```java
+byte[] src = ...;
+Compressor compressor = new GzipCompressor();
+// 压缩
+byte[] dist = compressor.compress(src);
+// 解压
+src = compressor.decompress(dist);
+```
 #### SnappyCompressor google snappy压缩器
+```java
+byte[] src = ...;
+Compressor compressor = new SnappyCompressor();
+// 压缩
+byte[] dist = compressor.compress(src);
+// 解压
+src = compressor.decompress(dist);
+```
 #### ZstdCompressor facebook z-standard压缩器
+```java
+byte[] src = ...;
+Compressor compressor = new ZstdCompressor();
+// 压缩
+byte[] dist = compressor.compress(src);
+// 解压
+src = compressor.decompress(dist);
+```
 
 ### date
 #### DateParser 时间字符串解析器，效率高，并且不会抛异常
+```java
+DateParser dataParser = new DateParser("yyyy-MM-dd");
+// 解析
+Date date = dateParser.parse("2021-03-21");
+// 输出字符串
+String str = dateParser.format(date);
+```
 #### LocalDateUtils JDK8 LocalDate的工具类
 
 ### excel

@@ -170,10 +170,19 @@ public final class DateParser {
     /**
      * 格式化
      * @param date 时间
+     * @return 格式化后的字符串
+     */
+    public String format(Date date) {
+        return format(date, true);
+    }
+
+    /**
+     * 格式化
+     * @param date 时间
      * @param zeroPadding 是否补零
      * @return 格式化后的字符串
      */
-    public String format(Date date, boolean zeroPadding) {
+    String format(Date date, boolean zeroPadding) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
