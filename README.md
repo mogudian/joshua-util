@@ -75,9 +75,26 @@ Date date = dateParser.parse("2021-03-21");
 String str = dateParser.format(date);
 ```
 #### LocalDateUtils JDK8 LocalDate的工具类
+```java
+Date date = ...;
+// 将 Date 对象 转换为 LocalDate 对象
+LoacalDate localDate = LocalDateUtils.convertToLocalDate(date);
+// 将 Date 对象 转换为 LocalDateTime 对象
+LocalDateTime localDateTime = LocalDateUtils.convertToLocalDateTime(date);
+// 将 LocalDate 对象 转换为 Date 对象
+Date theDate = LocalDateUtils.convert(localDate);
+// 将 LocalDateTime 对象 转换为 Date 对象
+Date theDateWithTime = LocalDateUtils.convert(localDateTime);
+```
 
 ### excel
 #### ExcelParser Excel解析器
+```java
+File file = ...;
+ExcelParser<XyzExcelDTO> excelParser = new ExcelParser<>(XyzExcelDTO.class);
+// 解析Excel
+List<XyzExcelDTO> xyzList = excelParser.parse(new FileInputStream(file));
+```
 
 ### html
 #### HTMLUtils HTML工具类
