@@ -109,6 +109,11 @@ String digest = HTMLUtils.summarize(html, n, false);
 
 ### image
 #### ImageUtils 图片工具类
+```java
+BufferedImage image = ...;
+// 缩小图片，最大尺寸是256*256，等比例缩放，如果不足256则不缩放
+BufferedImage smallImage = ImageUtils.zoomOut(image, 256, ResizeMode.AUTO resizeMode, false);
+```
 
 ### io
 #### ByteBufferInputStream 包装ByteBuffer的InputStream
