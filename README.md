@@ -98,6 +98,14 @@ List<XyzExcelDTO> xyzList = excelParser.parse(new FileInputStream(file));
 
 ### html
 #### HTMLUtils HTML工具类
+```java
+String html = ...;
+// 去掉HTML上的标签以及内嵌的css、js代码，将HTML转换为纯文本
+String pureText = HTMLUtils.removeTags(html);
+// 摘要，取HTML中的前n个字符，保证不会出现标签截断
+int n = 50;
+String digest = HTMLUtils.summarize(html, n, false);
+```
 
 ### image
 #### ImageUtils 图片工具类
