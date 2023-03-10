@@ -225,6 +225,14 @@ Map<String, String> map2 = HashMapBuilder.build("a", "1", "b", "2");
 
 ### mask
 #### MaskUtils 掩码脱敏工具类
+```java
+String phone = "18511112222";
+// 前面保留3位 后面保留4位
+int front = 3, rear = 4;
+// 用 '*' 打码
+String maskPhone = MaskUtils.mask(phone, front, rear, '*');
+// 输出 185****2222
+```
 
 ### network
 #### ClientIpUtils 客户端IP地址获取工具，考虑了反向代理的情况
@@ -240,13 +248,25 @@ public class UserController {
 
 ```
 #### DownloadUtils 文件下载工具
+```java
+
+```
 #### IpAddressUtils IP地址的工具类
+```java
+
+```
 
 ### random
 #### UuidUtils UUID的工具类
+```java
+
+```
 
 ### regex
 #### RegexUtils 正则工具类
+```java
+
+```
 
 ### stream
 #### RandomKCollector 实现RandomK的collector
@@ -256,12 +276,45 @@ List<Integer> list = Arrays.stream(arr).boxed().collect(RandomKCollector.newInst
 System.out.println(list);
 ```
 #### StreamUtils 流的工具类
+```java
+List<String> list1 = Arrays.asList("1", "2");
+List<String> list2 = Arrays.asList("a", "b", "c");
+// 支持多个流的笛卡尔积
+Stream<String> stream = StreamUtils.cartesianProduct((String s1, String s2) -> s1 + s2, list1::stream, list2::stream)
+List<String> list = stream.collect(Collectors.toList());
+// list = ["1a", "1b", "1c", "2a", "2b", "2c"]
+```
 
 ### validator
 #### BaseValidator 基础校验器
+```java
+XxxAddDTO dto = ...;
+// 校验对象
+List<String> messages = BaseValidator.validate(dto);
+if (!messages.isEmpty()) {
+    // 这里表示校验失败了，messages就是所有注解上的错误信息
+}
+```
 
 ### 未分包
 #### EnumGetter 枚举工具类
+```java
+public enum XxxEnum {
+    READY(0),
+    RUNNING(1),
+    FINISH(2);
+    int status;
+    XxxEnum(int status) {
+        this.status = status;
+    }
+    public int getStatus() {
+        return this.status;
+    }
+}
+// 根据 status 获取枚举对象
+XxxEnum xxx = EnumGetter.get(XxxEnum.class, XxxEnum::getStatus, 2);
+// 返回 FINISH(2)
+```
 #### ObjectRelationMatcher 对象关系匹配器，特别适合不允许联表时的列表数据组装
 ```java
 // 例如一个评论列表页，不只展示评论内容，还需要展示文章标题和内容
