@@ -156,9 +156,25 @@ byte[] byteArray = ByteBufferUtils.toByteArray(byteBuffer);
 
 ### jdbc
 #### JdbcUtils JDBC的工具类
+```java
+DataSource dataSource = ...;
+String sql = "select * from xxx where create_time between ? and ?";
+Date start = ..., end = ...;
+List<XxxEntity> xxxList = JdbcUtils.selectList(XxxEntity.class, dataSource, sql, start, end);
+```
 
 ### json.fastjson
 #### FastJsonUtils FastJSON的工具类
+```java
+XxxDTO xxx = ...;
+// 将 Java 对象转为 JSONObject 对象
+JSONObject jsonObject = FastJsonUtils.toJSONObject(xxx);
+
+List<XxxDTO> xxxList = ...;
+// 将 Java 对象（List 或 array）转为 JSONArray 对象
+JSONArray jsonArray = FastJsonUtils.toJSONArray(xxxList);
+...
+```
 #### JSONArrayBuilder 快速构造JSONArray
 ```java
 JSONArray arr1 = JSONArrayBuilder.build(jsonObject);
