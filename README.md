@@ -117,8 +117,39 @@ BufferedImage smallImage = ImageUtils.zoomOut(image, 256, ResizeMode.AUTO resize
 
 ### io
 #### ByteBufferInputStream 包装ByteBuffer的InputStream
+```java
+ByteBuffer byteBuffer = ...;
+// 让 ByteBuffer 像 byte[] 一样易读
+try (ByteBufferInputStream input = new ByteBufferInputStream(byteBuffer);
+     FileOutputStream output = new FileOutputStream("xxx")) {
+    byte[] bytes = new byte[4096];
+    for (int len; (len = input.read(bytes)) >= 0; ) {
+        output.write(bytes)
+        output.flush();
+    }
+}
+```
 #### ByteBufferOutputStream 包装ByteBuffer的OutputStream
+```java
+ByteBuffer byteBuffer = ...;
+// 让 ByteBuffer 像 byte[] 一样易写
+try (FileInputStream input = new FileInputStream("xxx");
+     ByteBufferOutputStream output = new ByteBufferOutputStream(byteBuffer)) {
+    byte[] bytes = new byte[4096];
+    for (int len; (len = input.read(bytes)) >= 0; ) {
+        output.write(bytes)
+        output.flush();
+    }
+}
+```
 #### ByteBufferUtils ByteBuffer的工具类
+```java
+byte[] bytes = ...;
+// 将 byte[] 对象转为 ByteBuffer 对象
+ByteBuffer byteBuffer = ByteBufferUtils.newByteBuffer(bytes);
+// 将 ByteBuffer 对象转为 byte[] 对象
+byte[] byteArray = ByteBufferUtils.toByteArray(byteBuffer);
+```
 
 ### javac
 #### DynamicCompiler Java动态编译器
