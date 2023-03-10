@@ -20,7 +20,7 @@ public final class UuidUtils {
      * @return UUID
      */
     public static String uuid() {
-        return UUID.randomUUID().toString();
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     /**

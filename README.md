@@ -245,27 +245,42 @@ public class UserController {
         System.out.println("client real ip is: " + clientIp);
     }
 }
-
 ```
 #### DownloadUtils 文件下载工具
 ```java
-
+// 下载地址
+String url = "https://xxx";
+// 超时时间 10秒
+int readTimeout = 10 * 1000;
+// 是否优先读取原文件名
+boolean useSourceName = true;
+// 下载 返回的key为文件名 value为内容 其中文件名可以生成并匹配内容的格式
+// 比如 http://a.com/pic/001 最终文件名可能是001.png
+Map.Entry<String, ByteBuffer> download = DownloadUtils.download(url, readTimeout, useSourceName);
+String fileName = download.getKey();
+ByteBuffer fileContent = download.getValue();
 ```
 #### IpAddressUtils IP地址的工具类
 ```java
-
+// 获取本机IP地址，用于对外（比如注册中心）暴露自己的服务
+String localIp = IpAddressUtils.getLocalIp();
 ```
 
 ### random
 #### UuidUtils UUID的工具类
 ```java
-
+// 生成一个 UUID 并去掉其中的 '-'
+String uuid = UuidUtils.uuid();
+// 生成一个 UUID 并进行 base58 优化
+String base58Uuid = UuidUtils.base58Uuid();
 ```
 
 ### regex
 #### RegexUtils 正则工具类
 ```java
-
+// 转义正则
+Strint str = RegexUtils.escape(".*");
+// 返回 \.\*
 ```
 
 ### stream

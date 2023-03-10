@@ -102,4 +102,21 @@ public final class IpAddressUtils {
         return Optional.of(ipByNi.get(0));
     }
 
+    /**
+     * 获取IP地址
+     * @return IP
+     */
+    public static String getLocalIp() {
+        return getLocalIp4Address().map(Inet4Address::getHostAddress).orElseThrow(() -> new UnsupportedOperationException("无法获取本地IP"));
+    }
+
+    /**
+     * 获取IP地址
+     * @param defaultIp 如果没获取到，使用默认的
+     * @return IP
+     */
+    public static String getLocalIp(String defaultIp) {
+        return getLocalIp4Address().map(Inet4Address::getHostAddress).orElse(defaultIp);
+    }
+
 }
