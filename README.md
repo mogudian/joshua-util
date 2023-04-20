@@ -2,6 +2,16 @@
 
 工作中总结的各种好用的工具类，均在生产环境中稳定运行
 
+## 引用项目（已发布至中央仓库）
+
+```xml
+<dependency>
+    <groupId>com.mogudiandian</groupId>
+    <artifactId>joshua-util</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
 ## 工具说明
 
 ### bean
@@ -234,6 +244,17 @@ String maskPhone = MaskUtils.mask(phone, front, rear, '*');
 // 输出 185****2222
 ```
 
+### math
+#### NumberUtils 数值工具类，返回Optional，解析失败不会抛异常，除非越界
+```java
+Optional<Long> aLong = NumberUtils.parseLong("123456");
+Optional<Integer> aInteger = NumberUtils.parseInteger("-123456");
+Optional<Integer> aBigInteger = NumberUtils.parseBigInteger("123456");
+Optional<Double> aDouble = NumberUtils.parseDouble("123456.78");
+Optional<Double> aFloat = NumberUtils.parseFloat("-123456.78");
+Optional<Double> aBigDecimal = NumberUtils.parseBigDecimal("123456.78");
+```
+
 ### network
 #### ClientIpUtils 客户端IP地址获取工具，考虑了反向代理的情况
 ```java
@@ -371,63 +392,3 @@ matcher.setElements(comments)
 | servlet-api          | 3.1.0          | servlet相关依赖           |
 | lombok               | 1.18.16        |                       |
 
-## 使用前准备
-
-- [Maven](https://maven.apache.org/) (构建/发布当前项目)
-- Java 8 ([Download](https://adoptopenjdk.net/releases.html?variant=openjdk8))
-
-## 构建/安装项目
-
-使用以下命令:
-
-`mvn clean install`
-
-## 引用项目
-
-```xml
-
-<dependency>
-    <groupId>com.mogudiandian</groupId>
-    <artifactId>joshua-util</artifactId>
-    <version>LATEST</version>
-</dependency>
-```
-
-## 发布项目
-
-修改 `pom.xml` 的 `distributionManagement` 节点，替换为自己在 `settings.xml` 中 配置的 `server` 节点，
-然后执行 `mvn clean deploy`
-
-举例：
-
-`settings.xml`
-
-```xml
-<servers>
-    <server>
-        <id>snapshots</id>
-        <username>yyy</username>
-        <password>yyy</password>
-    </server>
-    <server>
-        <id>releases</id>
-        <username>xxx</username>
-        <password>xxx</password>
-    </server>
-</servers>
-```
-
-`pom.xml`
-
-```xml
-<distributionManagement>
-    <snapshotRepository>
-        <id>snapshots</id>
-        <url>http://xxx/snapshots</url>
-    </snapshotRepository>
-    <repository>
-        <id>releases</id>
-        <url>http://xxx/releases</url>
-    </repository>
-</distributionManagement>
-```
