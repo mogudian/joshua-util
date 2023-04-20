@@ -255,6 +255,34 @@ Optional<Double> aFloat = NumberUtils.parseFloat("-123456.78");
 Optional<Double> aBigDecimal = NumberUtils.parseBigDecimal("123456.78");
 ```
 
+#### CalculationUtils 计算工具类，支持多个数值、数组、集合，便于对超过2个数的计算，对null友好
+```java
+// 加法
+BigDecimal add = CalculationUtils.add(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN);
+BigDecimal add = CalculationUtils.add(array);
+BigDecimal add = CalculationUtils.add(list);
+
+// 减法
+BigDecimal substract = CalculationUtils.substract(BigDecimal.TEN, BigDecimal.ONE, BigDecimal.ZERO);
+BigDecimal substract = CalculationUtils.substract(array);
+BigDecimal substract = CalculationUtils.substract(list);
+
+// 乘法
+BigDecimal multiple = CalculationUtils.multiple(BigDecimal.TEN, BigDecimal.ONE, BigDecimal.ZERO);
+BigDecimal multiple = CalculationUtils.multiple(array);
+BigDecimal multiple = CalculationUtils.multiple(list);
+
+// 除法
+BigDecimal divide = CalculationUtils.divide(4, RoundingMode.HALF_UP, BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.TEN);
+BigDecimal divide = CalculationUtils.divide(4, RoundingMode.HALF_UP, array);
+BigDecimal divide = CalculationUtils.divide(4, RoundingMode.HALF_UP, list);
+
+// 除法 四舍五入保留两位小数
+BigDecimal divide = CalculationUtils.divide(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.TEN);
+BigDecimal divide = CalculationUtils.divide(array);
+BigDecimal divide = CalculationUtils.divide(list);
+```
+
 ### network
 #### ClientIpUtils 客户端IP地址获取工具，考虑了反向代理的情况
 ```java
