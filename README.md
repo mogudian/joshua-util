@@ -8,7 +8,7 @@
 <dependency>
     <groupId>com.mogudiandian</groupId>
     <artifactId>joshua-util</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>LATEST</version>
 </dependency>
 ```
 
@@ -333,10 +333,16 @@ Strint str = RegexUtils.escape(".*");
 ```
 
 ### stream
+#### ForceToMapCollector 实现将流强制收集为map
+```java
+int[] arr = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+Map<Integer, Boolean> map = Arrays.stream(arr).boxed().collect(ForceToMapCollector.collect(Functional.identity(), x -> x % 2 == 0));
+System.out.println(map);
+```
 #### RandomKCollector 实现RandomK的collector
 ```java
 int[] arr = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-List<Integer> list = Arrays.stream(arr).boxed().collect(RandomKCollector.newInstance(6));
+List<Integer> list = Arrays.stream(arr).boxed().collect(RandomKCollector.collect(6));
 System.out.println(list);
 ```
 #### StreamUtils 流的工具类

@@ -15,11 +15,11 @@ import java.util.stream.IntStream;
  * 使用方式：
  * <pre>
  *     int[] arr = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
- *     List<Integer> list = Arrays.stream(arr).boxed().collect(RandomKCollector.newInstance(6));
+ *     List<Integer> list = Arrays.stream(arr).boxed().collect(RandomKCollector.collect(6));
  *     System.out.println(list);
  * </pre>
  *
- * @param <T> 元素
+ * @param <T> stream中元素的类型
  * @author sunbo
  */
 @NotThreadSafe
@@ -40,7 +40,7 @@ public final class RandomKCollector<T> implements Collector<T, PriorityQueue<Map
      * @param <T> 元素类型
      * @return RandomK收集器
      */
-    public static <T> RandomKCollector<T> newInstance(int k) {
+    public static <T> RandomKCollector<T> collect(int k) {
         return new RandomKCollector<>(k);
     }
 
