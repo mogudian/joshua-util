@@ -89,6 +89,32 @@ public final class BeanCopyUtils {
     }
 
     /**
+     * 拷贝集合c1(x1, x2, ..., xn)到新List(y1, y2, ..., yn)
+     * @param source 原集合
+     * @param elementSupplier 新集合元素初始化方法
+     * @return 新集合
+     * @param <S> 原集合元素类型
+     * @param <CS> 原集合类型
+     * @param <T> 新集合元素类型
+     */
+    public static <S, CS extends Collection<? extends S>, T> List<T> copyList(CS source, Supplier<T> elementSupplier) {
+        return copyCollection(source, ArrayList::new, elementSupplier);
+    }
+
+    /**
+     * 拷贝集合c1(x1, x2, ..., xn)到新Set(y1, y2, ..., yn)
+     * @param source 原集合
+     * @param elementSupplier 新集合元素初始化方法
+     * @return 新集合
+     * @param <S> 原集合元素类型
+     * @param <CS> 原集合类型
+     * @param <T> 新集合元素类型
+     */
+    public static <S, CS extends Collection<? extends S>, T> Set<T> copySet(CS source, Supplier<T> elementSupplier) {
+        return copyCollection(source, HashSet::new, elementSupplier);
+    }
+
+    /**
      * 两个类的元组
      * @author sunbo
      */
