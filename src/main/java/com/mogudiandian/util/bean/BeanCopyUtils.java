@@ -6,8 +6,10 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.springframework.cglib.beans.BeanCopier;
 
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Bean属性拷贝的工具
@@ -67,6 +69,23 @@ public final class BeanCopyUtils {
      */
     public static <T> T copyPropertiesAndGet(Object source, Supplier<T> supplier) {
         return copyPropertiesAndGet(source, supplier.get());
+    }
+
+    /**
+     * 拷贝集合c1(x1, x2, ..., xn)到新集合c2(y1, y2, ..., yn)
+     * @param source 原集合
+     * @param collectionSupplier 新集合初始化方法
+     * @param elementSupplier 新集合元素初始化方法
+     * @return 新集合
+     * @param <S> 原集合元素类型
+     * @param <CS> 原集合类型
+     * @param <T> 新集合元素类型
+     * @param <CT> 新集合类型
+     */
+    public static <S, CS extends Collection<? extends S>, T, CT extends Collection<T>> CT copyCollection(CS source, Supplier<CT> collectionSupplier, Supplier<T> elementSupplier) {
+        return source.stream()
+                     .map(x -> copyPropertiesAndGet(x, elementSupplier))
+                     .collect(Collectors.toCollection(collectionSupplier));
     }
 
     /**

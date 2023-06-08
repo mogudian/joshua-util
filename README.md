@@ -25,6 +25,18 @@ X x = BeanCopyUtils.copyPropertiesAndGet(src, new X());
 
 // 用指定的方法构造新对象并拷贝对象的属性到新对象中并返回新对象
 X x = BeanCopyUtils.copyPropertiesAndGet(src, X::new);
+
+// 拷贝集合
+List<Entity> list = ...;
+Set<Dto> set = BeanCopyUtils.copyCollection(list, HashSet::new, Dto::new);
+
+// 拷贝集合到list
+List<Entity> list = ...;
+List<Dto> newList = BeanCopyUtils.copyList(list, Dto::new);
+
+// 拷贝集合到set
+List<Entity> list = ...;
+Set<Dto> newSet = BeanCopyUtils.copySet(list, Dto::new);
 ```
 
 ### codec
