@@ -381,21 +381,34 @@ if (!messages.isEmpty()) {
 ### 未分包
 #### EnumGetter 枚举工具类
 ```java
+@Getter
 public enum XxxEnum {
-    READY(0),
-    RUNNING(1),
-    FINISH(2);
+    READY(0, "就绪"),
+    RUNNING(1, "运行中"),
+    FINISH(2, "完成");
     int status;
-    XxxEnum(int status) {
+    String description;
+    XxxEnum(int status, String description) {
         this.status = status;
-    }
-    public int getStatus() {
-        return this.status;
+        this.description = description;
     }
 }
 // 根据 status 获取枚举对象
-XxxEnum xxx = EnumGetter.get(XxxEnum.class, XxxEnum::getStatus, 2);
-// 返回 FINISH(2)
+XxxEnum xxx = EnumGetter.get(XxxEnum.class, XxxEnum::getStatus, 1);
+// 返回 RUNNING
+
+// 根据 status 获取 description
+String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 2, XxxEnum::getDescription);
+// 返回 完成
+
+// 根据 status 获取 description status不存在
+String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 3, XxxEnum::getDescription)
+// 返回 null
+
+// 根据 status 获取 description status不存在 设置默认值
+String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 4, XxxEnum::getDescription, "未知");
+// 返回 未知
+
 ```
 #### ObjectRelationMatcher 对象关系匹配器，特别适合不允许联表时的列表数据组装
 ```java
