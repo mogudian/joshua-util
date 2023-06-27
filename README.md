@@ -408,7 +408,36 @@ String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::get
 // 根据 status 获取 description status不存在 设置默认值
 String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 4, XxxEnum::getDescription, "未知");
 // 返回 未知
+```
+#### LooseEnumGetter 宽松的枚举工具类，和EnumGetter的区别是更宽松，查找key基于toString，解决了某些enum的属性类型是Long，用Integer或String查询不到的情况
+```java
+@Getter
+public enum XxxEnum {
+    READY(0L, "就绪"),
+    RUNNING(1L, "运行中"),
+    FINISH(2L, "完成");
+    Long status;
+    String description;
+    XxxEnum(Long status, String description) {
+        this.status = status;
+        this.description = description;
+    }
+}
+// 根据 status 获取枚举对象
+XxxEnum xxx = EnumGetter.get(XxxEnum.class, LooseEnumGetter::getStatus, 1L);
+// 返回 RUNNING
 
+// 根据 status 获取 description
+String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 2, XxxEnum::getDescription);
+// 返回 完成
+
+// 根据 status 获取 description status不存在
+String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, "3", XxxEnum::getDescription)
+// 返回 null
+
+// 根据 status 获取 description status不存在 设置默认值
+String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 4, XxxEnum::getDescription, "未知");
+// 返回 未知
 ```
 #### ObjectRelationMatcher 对象关系匹配器，特别适合不允许联表时的列表数据组装
 ```java
