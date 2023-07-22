@@ -118,6 +118,15 @@ ExcelParser<XyzExcelDTO> excelParser = new ExcelParser<>(XyzExcelDTO.class);
 List<XyzExcelDTO> xyzList = excelParser.parse(new FileInputStream(file));
 ```
 
+### function
+#### FunctionUtils Function的工具
+```java
+// 例如 有两个现成的函数分别是把A转为B、把B转为C，那么现在需要一个函数是把A转为C
+Function<A, B> aToB;
+Function<B, C> bToC;
+Function<A, C> aToC = FunctionUtils.compose(bToC, aToB);
+```
+
 ### html
 #### HTMLUtils HTML工具类
 ```java
@@ -350,6 +359,10 @@ Strint str = RegexUtils.escape(".*");
 int[] arr = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 Map<Integer, Boolean> map = Arrays.stream(arr).boxed().collect(ForceToMapCollector.collect(Functional.identity(), x -> x % 2 == 0));
 System.out.println(map);
+
+Stream<String> stream = Arrays.stream("a", "bc", "def", "ghij", "klmno");
+Map<Integer, String> countMap = stream.collect(ForceToMapCollector.collect(String::length));
+System.out.println(countMap);
 ```
 #### RandomKCollector 实现RandomK的collector
 ```java
@@ -459,6 +472,18 @@ matcher.setElements(comments)
            comment.setArticleTitle("未知标题");
            comment.setArticleContent("未知内容");
        });
+```
+#### WeakTypeUtils 弱类型工具类
+```java
+WeakTypeUtils.toBoolean(null); // false
+WeakTypeUtils.toBoolean(false); // false
+WeakTypeUtils.toBoolean(true); // true
+WeakTypeUtils.toBoolean(0); // false
+WeakTypeUtils.toBoolean(1); // true
+WeakTypeUtils.toBoolean(""); // false
+WeakTypeUtils.toBoolean("a"); // true
+WeakTypeUtils.toBoolean(new Object()); // true
+WeakTypeUtils.toBoolean(new int[0]); // true
 ```
 
 ## 依赖三方库

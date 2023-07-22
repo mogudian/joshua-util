@@ -46,10 +46,21 @@ public final class ForceToMapCollector<T, K, V> implements Collector<T, Map<K, V
 	 * @param <T> stream中元素的类型
 	 * @param <K> key的类型
 	 * @param <V> value的类型
-	 * @return RandomK收集器
+	 * @return ForceToMapCollector收集器
 	 */
 	public static <T, K, V> ForceToMapCollector<T, K, V> collect(Function<T, K> keyMapper, Function<T, V> valueMapper) {
 		return new ForceToMapCollector<>(keyMapper, valueMapper);
+	}
+
+	/**
+	 * 创建ForceToMap收集器实例 收集后map的value类型为流的类型
+	 * @param keyMapper key的映射器
+	 * @param <T> stream中元素的类型
+	 * @param <K> key的类型
+	 * @return ForceToMapCollector收集器
+	 */
+	public static <T, K> ForceToMapCollector<T, K, T> collect(Function<T, K> keyMapper) {
+		return new ForceToMapCollector<>(keyMapper, Function.identity());
 	}
 
 	@Override
