@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
  * </pre>
  *
  * @param <T> stream中元素的类型
- * @author sunbo
+ * @author Joshua Sun
  */
 @NotThreadSafe
 public final class RandomKCollector<T> implements Collector<T, PriorityQueue<Map.Entry<Double, T>>, List<T>> {

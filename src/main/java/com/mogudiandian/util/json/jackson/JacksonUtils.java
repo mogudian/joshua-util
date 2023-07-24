@@ -14,7 +14,7 @@ import java.util.TimeZone;
 /**
  * Jackson工具类
  *
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class JacksonUtils {
 

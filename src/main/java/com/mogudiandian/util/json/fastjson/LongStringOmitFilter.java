@@ -5,7 +5,7 @@ import com.alibaba.fastjson.serializer.ValueFilter;
 /**
  * FastJSON省略长字符串的过滤器
  * 用法：JSON.toJSONString(jsonObject, new LongStringOmitFilter(x))
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class LongStringOmitFilter implements ValueFilter {
 

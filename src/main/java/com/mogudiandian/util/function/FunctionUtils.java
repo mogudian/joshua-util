@@ -5,7 +5,7 @@ import java.util.function.Function;
 /**
  * 函数的工具类
  *
- * @author sunbo
+ * @author Joshua Sun
  * @since 2023/6/28
  */
 public final class FunctionUtils {

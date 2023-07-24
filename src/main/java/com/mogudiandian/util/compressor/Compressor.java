@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * 压缩器
- * @author sunbo
+ * @author Joshua Sun
  */
 public interface Compressor {
 

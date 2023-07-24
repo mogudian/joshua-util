@@ -11,7 +11,7 @@ import java.util.RandomAccess;
 /**
  * FastJSON省略长数组的过滤器
  * 用法：JSON.toJSONString(jsonObject, new LongArrayOmitFilter(x))
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class LongArrayOmitFilter implements ValueFilter {
 

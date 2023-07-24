@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * 基础校验器
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class BaseValidator {
 

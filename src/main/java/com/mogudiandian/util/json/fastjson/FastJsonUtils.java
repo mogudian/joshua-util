@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * FastJSON的工具类
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class FastJsonUtils {
 

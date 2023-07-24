@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * 日期工具类
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class DateUtils {
 

@@ -7,7 +7,7 @@ import java.util.Arrays;
 /**
  * 掩码脱敏工具类
  *
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class MaskUtils {
 

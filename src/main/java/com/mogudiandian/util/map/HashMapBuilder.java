@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 /**
  * 快速构建HashMap
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class HashMapBuilder {
 

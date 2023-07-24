@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 /**
  * 流的工具类
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class StreamUtils {
 

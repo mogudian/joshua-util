@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 /**
  * 数值工具类
  *
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class NumberUtils {
 

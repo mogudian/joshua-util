@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * 客户端IP地址获取工具
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class ClientIpUtils {
 

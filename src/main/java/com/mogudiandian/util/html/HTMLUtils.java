@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * HTML工具类
  *
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class HTMLUtils {
 

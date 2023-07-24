@@ -66,7 +66,7 @@ import java.util.stream.Stream;
  * @param <C> 标识的集合类型
  * @param <D> 新集合的元素类型
  * @param <K> 新集合元素生成key的类型
- * @author sunbo
+ * @author Joshua Sun
  * // TODO 将线程池部分抽出 当前用的是默认实现（固定大小）
  * // TODO 将缓存部分抽出 当前用的是默认实现（本地内存）
  * // TODO 将重试部分抽出 当前用的是默认实现（固定时长+固定次数）

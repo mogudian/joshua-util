@@ -12,7 +12,7 @@ import java.io.InputStream;
 /**
  * 图片工具类
  *
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class ImageUtils {
 

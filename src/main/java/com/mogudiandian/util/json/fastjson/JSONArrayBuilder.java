@@ -7,7 +7,7 @@ import java.util.Collections;
 
 /**
  * 快速构造JSONArray
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class JSONArrayBuilder {
 

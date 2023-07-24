@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * Base58编解码
  *
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class Base58 {
 

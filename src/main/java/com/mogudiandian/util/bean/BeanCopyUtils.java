@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * Bean属性拷贝的工具
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class BeanCopyUtils {
 
@@ -116,7 +116,7 @@ public final class BeanCopyUtils {
 
     /**
      * 两个类的元组
-     * @author sunbo
+     * @author Joshua Sun
      */
     private static class ClassTuple {
         private Class<?> sourceClass;

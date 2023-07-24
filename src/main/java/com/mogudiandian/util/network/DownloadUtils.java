@@ -42,7 +42,7 @@ import java.util.UUID;
  * // 上面将ByteBuffer包装为InputStream 然后可按照流的方式来访问
  * </pre>
  *
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class DownloadUtils {
 

@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 
 /**
  * JSONArray的迭代器
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class JSONArrayIterable<T> implements Iterable<T> {
 

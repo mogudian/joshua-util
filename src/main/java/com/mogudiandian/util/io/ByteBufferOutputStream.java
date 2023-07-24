@@ -8,7 +8,7 @@ import java.util.function.Consumer;
  * 包装ByteBuffer的OutputStream
  * 注意：ByteBuffer的操作需要自行完成或通过带initFn的构造来完成
  *
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class ByteBufferOutputStream extends OutputStream {
 

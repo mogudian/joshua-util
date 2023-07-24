@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Excel解析器
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class ExcelParser<T> {
 

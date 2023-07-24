@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * 2.解析 如果正则能匹配 则将相应的group提取出来并将对应的field设置成提取出来的数字
  * 这个轮子的好处是线程安全 并且不会抛ParseException 无法解析时返回null
  *          不足在于只要形似时间即可 无法对真实性进行判断
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class DateParser {
 

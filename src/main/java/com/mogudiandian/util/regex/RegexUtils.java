@@ -2,7 +2,7 @@ package com.mogudiandian.util.regex;
 
 /**
  * 正则工具类
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class RegexUtils {
 

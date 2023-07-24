@@ -7,7 +7,7 @@ import com.github.luben.zstd.Zstd;
  * (C++) https://facebook.github.io/zstd/
  * (Java-JNI) https://github.com/luben/zstd-jni
  * (Java-Port) https://github.com/airlift/aircompressor/tree/master/src/main/java/io/airlift/compress/zstd
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class ZstdCompressor implements Compressor {
 

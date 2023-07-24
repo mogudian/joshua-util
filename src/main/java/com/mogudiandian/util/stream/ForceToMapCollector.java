@@ -24,7 +24,7 @@ import java.util.stream.Collector;
  * @param <T> stream中元素的类型
  * @param <K> key的类型
  * @param <V> value的类型
- * @author sunbo
+ * @author Joshua Sun
  */
 public final class ForceToMapCollector<T, K, V> implements Collector<T, Map<K, V>, Map<K, V>> {
 

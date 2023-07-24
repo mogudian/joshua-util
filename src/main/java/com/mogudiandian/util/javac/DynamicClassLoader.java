@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * 动态的类加载器，用来加载动态编译的class
- * @author sunbo
+ * @author Joshua Sun
  */
 final class DynamicClassLoader extends ClassLoader {
 
