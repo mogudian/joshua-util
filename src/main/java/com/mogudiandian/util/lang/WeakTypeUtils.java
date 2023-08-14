@@ -1,4 +1,4 @@
-package com.mogudiandian.util;
+package com.mogudiandian.util.lang;
 
 import java.util.Arrays;
 import java.util.Iterator;

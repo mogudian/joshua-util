@@ -6,7 +6,7 @@
 
     <groupId>com.mogudiandian</groupId>
     <artifactId>joshua-util</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
 
     <name>joshua-util</name>
     <description>Joshua's user-friendly utilities</description>
@@ -45,7 +45,7 @@
         <jackson.version>2.14.3</jackson.version>
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
-        <guava.version>32.0.0-jre</guava.version>
+        <guava.version>32.0.1-jre</guava.version>
         <spring.version>5.2.25.RELEASE</spring.version>
         <slf4j.version>1.7.30</slf4j.version>
         <hibernate-validator.version>6.1.6.Final</hibernate-validator.version>

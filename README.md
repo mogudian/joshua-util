@@ -246,6 +246,89 @@ String str = JSON.toJSONString(jsonObject, new LongStringOmitFilter(x));
 #### BigDecimal4BitsSerializer BigDecimal使用jackson序列化保留四位小数
 #### JacksonUtils Jackson工具类
 
+### lang
+#### EnhancedEqualsUtils 增强型的比较相同工具类
+```java
+// 下面都会返回true
+EnhancedEqualsUtils.equals(1, 1L);
+EnhancedEqualsUtils.equals("1", '1');
+EnhancedEqualsUtils.equals("1", 1L);
+EnhancedEqualsUtils.equals(new int[] {1, 2, 3}, new long[] {2L, 3L, 1L});
+EnhancedEqualsUtils.equals(Stream.of(1, 2, 3).collect(Collectors.toList()), Stream.of(3, 2, 1).collect(Collectors.toSet());
+```
+#### EnumGetter 枚举工具类
+```java
+@Getter
+public enum XxxEnum {
+    READY(0, "就绪"),
+    RUNNING(1, "运行中"),
+    FINISH(2, "完成");
+    int status;
+    String description;
+    XxxEnum(int status, String description) {
+        this.status = status;
+        this.description = description;
+    }
+}
+// 根据 status 获取枚举对象
+XxxEnum xxx = EnumGetter.get(XxxEnum.class, XxxEnum::getStatus, 1);
+// 返回 RUNNING
+
+// 根据 status 获取 description
+String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 2, XxxEnum::getDescription);
+// 返回 完成
+
+// 根据 status 获取 description status不存在
+String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 3, XxxEnum::getDescription)
+// 返回 null
+
+// 根据 status 获取 description status不存在 设置默认值
+String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 4, XxxEnum::getDescription, "未知");
+// 返回 未知
+```
+#### LooseEnumGetter 宽松的枚举工具类，和EnumGetter的区别是更宽松，查找key基于toString，解决了某些enum的属性类型是Long，用Integer或String查询不到的情况
+```java
+@Getter
+public enum XxxEnum {
+    READY(0L, "就绪"),
+    RUNNING(1L, "运行中"),
+    FINISH(2L, "完成");
+    Long status;
+    String description;
+    XxxEnum(Long status, String description) {
+        this.status = status;
+        this.description = description;
+    }
+}
+// 根据 status 获取枚举对象
+XxxEnum xxx = EnumGetter.get(XxxEnum.class, LooseEnumGetter::getStatus, 1L);
+// 返回 RUNNING
+
+// 根据 status 获取 description
+String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 2, XxxEnum::getDescription);
+// 返回 完成
+
+// 根据 status 获取 description status不存在
+String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, "3", XxxEnum::getDescription)
+// 返回 null
+
+// 根据 status 获取 description status不存在 设置默认值
+String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 4, XxxEnum::getDescription, "未知");
+// 返回 未知
+```
+#### WeakTypeUtils 弱类型工具类
+```java
+WeakTypeUtils.toBoolean(null); // false
+WeakTypeUtils.toBoolean(false); // false
+WeakTypeUtils.toBoolean(true); // true
+WeakTypeUtils.toBoolean(0); // false
+WeakTypeUtils.toBoolean(1); // true
+WeakTypeUtils.toBoolean(""); // false
+WeakTypeUtils.toBoolean("a"); // true
+WeakTypeUtils.toBoolean(new Object()); // true
+WeakTypeUtils.toBoolean(new int[0]); // true
+```
+
 ### map
 #### HashMapBuilder 快速构建HashMap
 ```java
@@ -392,66 +475,6 @@ if (!messages.isEmpty()) {
 ```
 
 ### 未分包
-#### EnumGetter 枚举工具类
-```java
-@Getter
-public enum XxxEnum {
-    READY(0, "就绪"),
-    RUNNING(1, "运行中"),
-    FINISH(2, "完成");
-    int status;
-    String description;
-    XxxEnum(int status, String description) {
-        this.status = status;
-        this.description = description;
-    }
-}
-// 根据 status 获取枚举对象
-XxxEnum xxx = EnumGetter.get(XxxEnum.class, XxxEnum::getStatus, 1);
-// 返回 RUNNING
-
-// 根据 status 获取 description
-String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 2, XxxEnum::getDescription);
-// 返回 完成
-
-// 根据 status 获取 description status不存在
-String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 3, XxxEnum::getDescription)
-// 返回 null
-
-// 根据 status 获取 description status不存在 设置默认值
-String description = EnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 4, XxxEnum::getDescription, "未知");
-// 返回 未知
-```
-#### LooseEnumGetter 宽松的枚举工具类，和EnumGetter的区别是更宽松，查找key基于toString，解决了某些enum的属性类型是Long，用Integer或String查询不到的情况
-```java
-@Getter
-public enum XxxEnum {
-    READY(0L, "就绪"),
-    RUNNING(1L, "运行中"),
-    FINISH(2L, "完成");
-    Long status;
-    String description;
-    XxxEnum(Long status, String description) {
-        this.status = status;
-        this.description = description;
-    }
-}
-// 根据 status 获取枚举对象
-XxxEnum xxx = EnumGetter.get(XxxEnum.class, LooseEnumGetter::getStatus, 1L);
-// 返回 RUNNING
-
-// 根据 status 获取 description
-String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 2, XxxEnum::getDescription);
-// 返回 完成
-
-// 根据 status 获取 description status不存在
-String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, "3", XxxEnum::getDescription)
-// 返回 null
-
-// 根据 status 获取 description status不存在 设置默认值
-String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 4, XxxEnum::getDescription, "未知");
-// 返回 未知
-```
 #### ObjectRelationMatcher 对象关系匹配器，特别适合不允许联表时的列表数据组装
 ```java
 // 例如一个评论列表页，不只展示评论内容，还需要展示文章标题和内容
@@ -473,35 +496,24 @@ matcher.setElements(comments)
            comment.setArticleContent("未知内容");
        });
 ```
-#### WeakTypeUtils 弱类型工具类
-```java
-WeakTypeUtils.toBoolean(null); // false
-WeakTypeUtils.toBoolean(false); // false
-WeakTypeUtils.toBoolean(true); // true
-WeakTypeUtils.toBoolean(0); // false
-WeakTypeUtils.toBoolean(1); // true
-WeakTypeUtils.toBoolean(""); // false
-WeakTypeUtils.toBoolean("a"); // true
-WeakTypeUtils.toBoolean(new Object()); // true
-WeakTypeUtils.toBoolean(new int[0]); // true
-```
+
 
 ## 依赖三方库
 
 | 依赖                   | 版本号            | 说明                    |
 |----------------------|----------------|-----------------------|
-| spring               | 5.2.12.RELEASE | 只用到了里面集成的cglib        |
-| fastjson             | 1.2.73         |                       |
-| jackson              | 2.11.3         |                       |
+| spring               | 5.2.25.RELEASE | 只用到了里面集成的cglib        |
+| fastjson             | 1.2.83         |                       |
+| jackson              | 2.14.3         |                       |
 | commons-lang3        | 3.11           |                       |
 | commons-collections4 | 4.4            |                       |
-| guava                | 29.0-jre       |                       |
+| guava                | 32.0.1.0-jre   |                       |
 | slf4j                | 1.7.30         |                       |
 | hibernate-validator  | 6.1.6.Final    |                       |
 | tika                 | 2.6.0          | 只用到了预测文件类型            |
 | easyexcel            | 2.2.7          | alibaba出品的简易excel解析工具 |
 | zstd                 | 1.5.2-4        | google出品的压缩工具         |
-| snappy               | 1.1.8.4        | facebook出品的压缩工具       |
+| snappy               | 1.1.10.1       | facebook出品的压缩工具       |
 | servlet-api          | 3.1.0          | servlet相关依赖           |
 | lombok               | 1.18.16        |                       |
 
