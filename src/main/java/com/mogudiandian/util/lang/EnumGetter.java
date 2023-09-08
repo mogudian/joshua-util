@@ -12,6 +12,7 @@ import java.util.function.Function;
 /**
  * 枚举工具类
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class EnumGetter {
 

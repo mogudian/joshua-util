@@ -10,6 +10,7 @@ import java.util.stream.Stream;
  * 计算工具类
  *
  * @author Joshua Sun
+ * @since 1.0.1
  */
 public final class CalculationUtils {
 

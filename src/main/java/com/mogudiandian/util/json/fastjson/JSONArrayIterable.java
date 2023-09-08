@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 /**
  * JSONArray的迭代器
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class JSONArrayIterable<T> implements Iterable<T> {
 

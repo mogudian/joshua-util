@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  * 模拟弱类型的工具类
  *
  * @author Joshua Sun
- * @since 2023/6/15
+ * @since 1.0.5
  */
 public final class WeakTypeUtils {
 

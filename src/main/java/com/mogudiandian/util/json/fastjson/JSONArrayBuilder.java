@@ -8,6 +8,7 @@ import java.util.Collections;
 /**
  * 快速构造JSONArray
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class JSONArrayBuilder {
 

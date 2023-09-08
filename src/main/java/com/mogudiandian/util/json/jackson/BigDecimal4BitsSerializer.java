@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 /**
  * BigDecimal使用jackson序列化保留四位小数
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public class BigDecimal4BitsSerializer extends JsonSerializer<BigDecimal> {
 

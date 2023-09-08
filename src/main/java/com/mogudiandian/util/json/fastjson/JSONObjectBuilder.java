@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 /**
  * 快速构造JSONObject
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class JSONObjectBuilder {
 

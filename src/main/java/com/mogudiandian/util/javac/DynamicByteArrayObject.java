@@ -8,6 +8,7 @@ import java.io.OutputStream;
  * 动态字节数组对象
  * 在 Java™ 编程语言源和类文件上进行操作的工具的文件抽象
  * @author Joshua Sun
+ * @since 1.0.0
  */
 class DynamicByteArrayObject extends SimpleJavaFileObject {
 

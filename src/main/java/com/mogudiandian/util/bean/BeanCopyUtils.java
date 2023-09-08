@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Bean属性拷贝的工具
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class BeanCopyUtils {
 

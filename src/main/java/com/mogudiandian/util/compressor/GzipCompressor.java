@@ -9,6 +9,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * GZIP压缩器
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class GzipCompressor implements Compressor {
 

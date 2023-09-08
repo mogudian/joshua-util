@@ -13,6 +13,7 @@ import java.util.Optional;
  * 带缓冲的Excel解析监听器
  * @param <T> 数据类型
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public class BufferedExcelListener<T> extends AnalysisEventListener<T> {
 

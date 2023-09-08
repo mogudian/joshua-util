@@ -9,6 +9,7 @@ import java.util.function.Consumer;
  * 注意：ByteBuffer的操作需要自行完成或通过带initFn的构造来完成
  *
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class ByteBufferInputStream extends InputStream {
 

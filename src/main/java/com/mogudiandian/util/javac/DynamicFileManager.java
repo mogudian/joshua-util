@@ -10,6 +10,7 @@ import java.util.Map;
 /**
  * 动态编译的文件管理器
  * @author Joshua Sun
+ * @since 1.0.0
  */
 final class DynamicFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 

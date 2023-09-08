@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 /**
  * BigDecimal使用jackson序列化保留两位小数
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public class BigDecimal2BitsSerializer extends JsonSerializer<BigDecimal> {
 

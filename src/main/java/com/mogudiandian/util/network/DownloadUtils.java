@@ -43,6 +43,7 @@ import java.util.UUID;
  * </pre>
  *
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class DownloadUtils {
 

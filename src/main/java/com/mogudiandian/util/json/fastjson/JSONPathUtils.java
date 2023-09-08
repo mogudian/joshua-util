@@ -7,6 +7,7 @@ import com.alibaba.fastjson.util.TypeUtils;
 /**
  * JSONPath的工具类(基于fastjson)
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class JSONPathUtils {
 

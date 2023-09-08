@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
  * 增强型的比较相同工具类
  *
  * @author Joshua Sun
- * @since 2023/8/3
+ * @since 1.0.9
  */
 public final class EnhancedEqualsUtils {
 
@@ -35,6 +35,69 @@ public final class EnhancedEqualsUtils {
      */
     public static boolean equals(Object o1, Object o2) {
         return objectEquals(o1, o2);
+    }
+
+    /**
+     * Compares multiple objects for equality.
+     *
+     * @param o1 The first object to compare.
+     * @param o2 The second object to compare.
+     * @param o3 The third object to compare.
+     * @param os Additional objects to compare.
+     * @return {@code true} if all objects are equal, {@code false} otherwise.
+     */
+    public static boolean equals(Object o1, Object o2, Object o3, Object... os) {
+        if (equals(o1, o2) && equals(o1, o3)) {
+            if (os == null) {
+                return true;
+            }
+            for (Object o : os) {
+                if (!equals(o1, o)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Compares an array of objects for equality.
+     *
+     * @param os The array of objects to compare.
+     * @return {@code true} if all objects in the array are equal, {@code false} otherwise.
+     */
+    public static boolean equals(Object[] os) {
+        if (os == null || os.length < 2) {
+            return false;
+        }
+        Object o1 = os[0];
+        for (int i = 1, len = os.length; i < len; i++) {
+            if (!equals(o1, os[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Compares a collection of objects for equality.
+     *
+     * @param c The collection of objects to compare.
+     * @return {@code true} if all objects in the collection are equal, {@code false} otherwise.
+     */
+    public static boolean equals(Collection<?> c) {
+        if (c == null || c.size() < 2) {
+            return false;
+        }
+        Iterator<?> iterator = c.iterator();
+        for (Object o1 = iterator.next(), o; iterator.hasNext(); ) {
+            o = iterator.next();
+            if (!equals(o1, o)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

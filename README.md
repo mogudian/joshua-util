@@ -126,6 +126,8 @@ Function<A, B> aToB;
 Function<B, C> bToC;
 Function<A, C> aToC = FunctionUtils.compose(bToC, aToB);
 ```
+#### TriFunction 三个参数的函数
+#### TriPredicate 三个参数的断言
 
 ### html
 #### HTMLUtils HTML工具类
@@ -247,7 +249,20 @@ String str = JSON.toJSONString(jsonObject, new LongStringOmitFilter(x));
 #### JacksonUtils Jackson工具类
 
 ### lang
-#### EnhancedEqualsUtils 增强型的比较相同工具类
+#### CompareUtils 比较工具类，支持多参数级联比较，数组内比较，集合内比较
+```java
+// 是否相同
+CompareUtils.isEquivalent(1, 1, 1, 1);
+// 是否递增，每一个元素都比前一个大
+CompareUtils.isIncreasing(1, 2, 3, 4);
+// 是否递增，每一个元素都和前一个元素相同或比前一个元素大
+CompareUtils.isIncreasingOrEquivalent(1, 2, 2, 3);
+// 是否递减，每一个元素都比前一个小
+CompareUtils.isDecreasing(4, 3, 2, 1);
+// 是否递增减，每一个元素都和前一个元素相同或比前一个元素小
+CompareUtils.isDecreasingOrEquivalent(3, 2, 2, 1);
+```
+#### EnhancedEqualsUtils 增强型的比较相等工具类
 ```java
 // 下面都会返回true
 EnhancedEqualsUtils.equals(1, 1L);
@@ -255,6 +270,7 @@ EnhancedEqualsUtils.equals("1", '1');
 EnhancedEqualsUtils.equals("1", 1L);
 EnhancedEqualsUtils.equals(new int[] {1, 2, 3}, new long[] {2L, 3L, 1L});
 EnhancedEqualsUtils.equals(Stream.of(1, 2, 3).collect(Collectors.toList()), Stream.of(3, 2, 1).collect(Collectors.toSet());
+EnhancedEqualsUtils.equals(1, 1L, '1', "1");
 ```
 #### EnumGetter 枚举工具类
 ```java
@@ -461,6 +477,14 @@ List<String> list2 = Arrays.asList("a", "b", "c");
 Stream<String> stream = StreamUtils.cartesianProduct((String s1, String s2) -> s1 + s2, list1::stream, list2::stream)
 List<String> list = stream.collect(Collectors.toList());
 // list = ["1a", "1b", "1c", "2a", "2b", "2c"]
+```
+
+### string
+#### SplitUtils 字符串分割工具类
+```java
+String str = "1!2@3#4$5%6^7&8*9(0)";
+List<Integer> list = SplitUtils.splitToIntegerList(str);
+// list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 ```
 
 ### validator

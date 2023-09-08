@@ -67,9 +67,7 @@ import java.util.stream.Stream;
  * @param <D> 新集合的元素类型
  * @param <K> 新集合元素生成key的类型
  * @author Joshua Sun
- * // TODO 将线程池部分抽出 当前用的是默认实现（固定大小）
- * // TODO 将缓存部分抽出 当前用的是默认实现（本地内存）
- * // TODO 将重试部分抽出 当前用的是默认实现（固定时长+固定次数）
+ * @since 1.0.0
  */
 @NotThreadSafe
 public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
@@ -125,6 +123,11 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
     private Function<E, I> elementIdentifierExtractor;
 
     /**
+     * 提取元素标识符的方法，用于多对多
+     */
+    private Function<E, Collection<I>> elementIdentifiersExtractor;
+
+    /**
      * 将标识符聚合成什么集合 要看查询新集合的参数是什么 可能是List或Set
      */
     private Collector<I, ?, C> identifierCollector;
@@ -176,9 +179,19 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
     private Function<E, K> elementToKeyMapping;
 
     /**
+     * 源集合的元素映射到新集合唯一键的方法
+     */
+    private Function<E, Collection<K>> elementToKeysMapping;
+
+    /**
      * 源集合和新集合的关系是否为一对多 默认为false（一对一）
      */
     private boolean oneToMany;
+
+    /**
+     * 源集合和新集合的关系是否为多对多 默认为false（一对一）
+     */
+    private boolean manyToMany;
 
     /**
      * 如果关系为一对多 新集合为空集合（[]）是否算未匹配 默认为false（不算 也就是算匹配上了0条）
@@ -220,6 +233,11 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
      */
     private Map<E, List<D>> oneToManyMap;
 
+    /**
+     * 匹配后的一对多关系
+     */
+    private Map<E, List<D>> manyToManyMap;
+
     // 初始化缓存和线程池
     static {
         cache = HashBasedTable.create(DEFAULT_CACHE_COLLECTION_COUNT, DEFAULT_CACHE_IDENTIFIER_COUNT_PER_COLLECTION);
@@ -245,7 +263,11 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
      */
     private void validate() {
         Objects.requireNonNull(elements, "源集合不能为空");
-        Objects.requireNonNull(elementIdentifierExtractor, "标识符提取器不能为空");
+        if (manyToMany) {
+            Objects.requireNonNull(elementIdentifiersExtractor, "标识符提取器不能为空");
+        } else {
+            Objects.requireNonNull(elementIdentifierExtractor, "标识符提取器不能为空");
+        }
 
         // 只有设置了批量查询方法时才需要指定collector（要保持和批量查询方法的参数一致）
         if (batchQueryMethod != null) {
@@ -267,9 +289,16 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
 
         Objects.requireNonNull(dataKeyGenerator, "新集合唯一键生成器不能为空");
 
-        Objects.requireNonNull(elementToKeyMapping, "源集合到唯一键的映射关系不能为空");
+        if (manyToMany) {
+            Objects.requireNonNull(elementToKeysMapping, "源集合到唯一键的映射关系不能为空");
+        } else {
+            Objects.requireNonNull(elementToKeyMapping, "源集合到唯一键的映射关系不能为空");
+        }
 
         if (useCache) {
+            if (manyToMany) {
+                throw new RuntimeException("多对多的情况下不能使用缓存");
+            }
             Objects.requireNonNull(cacheKeyName, "使用缓存的情况下缓存名称不能为空");
         }
     }
@@ -300,14 +329,18 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
         // 源集合的元素和新集合的元素对应关系（一对多）
         Map<E, List<D>> elementDataListMap;
 
-        if (!oneToMany) {
-            // 一对一
-            elementDataMap = new HashMap<>(elements.size(), 1);
-            elementDataListMap = null;
-        } else {
+        if (manyToMany) {
+            // 多对多
+            elementDataMap = null;
+            elementDataListMap = new HashMap<>(elements.size(), 1);
+        } else if (oneToMany) {
             // 一对多
             elementDataMap = null;
             elementDataListMap = new HashMap<>(elements.size(), 1);
+        } else {
+            // 一对一
+            elementDataMap = new HashMap<>(elements.size(), 1);
+            elementDataListMap = null;
         }
 
         // 过滤后的源集合
@@ -320,19 +353,16 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
         if (useCache) {
             // 没命中缓存的标识
             List<I> identifierList = new ArrayList<>(elements.size());
-            if (!oneToMany) {
-                // 一对一
+            if (manyToMany) {
+                // 多对多
                 elementStream.forEach(element -> {
-                    I identifier = elementIdentifierExtractor.apply(element);
-                    D data = getDataFromCache(identifier);
-                    // 非空表示命中缓存 命中了则加入关系映射中 未命中则加入待查询列表中
-                    if (data != null) {
-                        elementDataMap.put(element, data);
-                    } else {
-                        identifierList.add(identifier);
+                    Collection<I> identifiers = elementIdentifiersExtractor.apply(element);
+                    if (CollectionUtils.isNotEmpty(identifiers)) {
+                        // 多对多没有缓存
+                        identifierList.addAll(identifiers);
                     }
                 });
-            } else {
+            } else if (oneToMany) {
                 // 一对多
                 elementStream.forEach(element -> {
                     I identifier = elementIdentifierExtractor.apply(element);
@@ -342,6 +372,18 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
                         elementDataListMap.put(element, list);
                     } else {
                         // 如果没找到 或者是找到了但是配置了emptyAsUnmatched=true 都认为是没找到
+                        identifierList.add(identifier);
+                    }
+                });
+            } else {
+                // 一对一
+                elementStream.forEach(element -> {
+                    I identifier = elementIdentifierExtractor.apply(element);
+                    D data = getDataFromCache(identifier);
+                    // 非空表示命中缓存 命中了则加入关系映射中 未命中则加入待查询列表中
+                    if (data != null) {
+                        elementDataMap.put(element, data);
+                    } else {
                         identifierList.add(identifier);
                     }
                 });
@@ -453,20 +495,26 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
                 // 过滤源集合 因为只根据过滤后的内容进行了查询
                 elementStream = filteredElementStream();
 
-                if (!oneToMany) {
-                    // 一对一
-                    Map<K, D> keyDataMap = dataStream.filter(Objects::nonNull)
-                                                     .collect(HashMap::new, (m, e) -> m.put(dataKeyGenerator.apply(e), e), Map::putAll);
-                    elementStream.filter(element -> !elementDataMap.containsKey(element))
+                if (manyToMany) {
+                    // 多对多
+                    Map<K, List<D>> keyDataListMap = dataStream.filter(Objects::nonNull)
+                                                               .collect(Collectors.groupingBy(dataKeyGenerator));
+                    elementStream.filter(element -> !keyDataListMap.containsKey(element))
                                  .forEach(element -> {
+                                     Collection<K> collection = elementToKeysMapping.apply(element);
+                                     for (K key : collection) {
+                                         List<D> list = keyDataListMap.get(key);
+                                         elementDataListMap.put(element, list);
+                                     }
                                      K key = elementToKeyMapping.apply(element);
-                                     D data = keyDataMap.get(key);
-                                     elementDataMap.put(element, data);
-                                     if (useCache && data != null) {
-                                         putToCache(elementIdentifierExtractor.apply(element), data);
+                                     List<D> list = keyDataListMap.get(key);
+                                     elementDataListMap.put(element, list);
+                                     if (useCache && list != null && (!list.isEmpty() || !emptyAsUnmatched)) {
+                                         putListToCache(elementIdentifierExtractor.apply(element), list);
                                      }
                                  });
-                } else {
+
+                } else if (oneToMany) {
                     // 一对多
                     Map<K, List<D>> keyDataListMap = dataStream.filter(Objects::nonNull)
                                                                .collect(Collectors.groupingBy(dataKeyGenerator));
@@ -479,26 +527,45 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
                                          putListToCache(elementIdentifierExtractor.apply(element), list);
                                      }
                                  });
+                } else {
+                    // 一对一
+                    Map<K, D> keyDataMap = dataStream.filter(Objects::nonNull)
+                                                     .collect(HashMap::new, (m, e) -> m.put(dataKeyGenerator.apply(e), e), Map::putAll);
+                    elementStream.filter(element -> !elementDataMap.containsKey(element))
+                                 .forEach(element -> {
+                                     K key = elementToKeyMapping.apply(element);
+                                     D data = keyDataMap.get(key);
+                                     elementDataMap.put(element, data);
+                                     if (useCache && data != null) {
+                                         putToCache(elementIdentifierExtractor.apply(element), data);
+                                     }
+                                 });
                 }
 
             }
         }
 
-        // 补充来匹配的
-        if (!oneToMany) {
-            // 一对一
+        // 补充未匹配的
+        if (manyToMany) {
+            // 多对多
             elements.stream()
-                    .filter(element -> !elementDataMap.containsKey(element))
-                    .forEach(element -> elementDataMap.put(element, null));
-        } else {
+                    .filter(element -> !elementDataListMap.containsKey(element))
+                    .forEach(element -> elementDataListMap.put(element, null));
+        } else if (oneToMany) {
             // 一对多
             elements.stream()
                     .filter(element -> !elementDataListMap.containsKey(element))
                     .forEach(element -> elementDataListMap.put(element, null));
+        } else {
+            // 一对一
+            elements.stream()
+                    .filter(element -> !elementDataMap.containsKey(element))
+                    .forEach(element -> elementDataMap.put(element, null));
         }
 
         this.oneToOneMap = elementDataMap;
         this.oneToManyMap = elementDataListMap;
+        this.manyToManyMap = elementDataListMap;
 
         // 如果需要match后清理缓存 则立即清理
         if (useCache && clearCacheAfterMatch) {
@@ -699,6 +766,27 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
     }
 
     /**
+     * 处理所有一对多的关系
+     * @param matchedProcessor 已匹配到关系的处理器
+     * @param unmatchedProcessor 未匹配到关系的处理器
+     */
+    public void processManyToMany(BiConsumer<E, List<D>> matchedProcessor, Consumer<E> unmatchedProcessor) {
+        if (!matched) {
+            throw new RuntimeException("需要先调用match方法");
+        }
+        if (!manyToMany) {
+            throw new RuntimeException("一对一关系应该调用getOneToOneRelations方法");
+        }
+        manyToManyMap.forEach((k, v) -> {
+            if (v != null && (!v.isEmpty() || !emptyAsUnmatched)) {
+                matchedProcessor.accept(k, v);
+            } else if (unmatchedProcessor != null) {
+                unmatchedProcessor.accept(k);
+            }
+        });
+    }
+
+    /**
      * 处理已匹配的一对多的关系
      * @param matchedProcessor 已匹配到关系的处理器
      */
@@ -803,6 +891,21 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
 
     public ObjectRelationMatcher<E, I, C, D, K> setEventListener(ObjectRelationMatcherEvent<E, I, C, D, K> eventListener) {
         this.eventListener = eventListener;
+        return markUnmatched();
+    }
+
+    public ObjectRelationMatcher<E, I, C, D, K> setElementIdentifiersExtractor(Function<E, Collection<I>> elementIdentifiersExtractor) {
+        this.elementIdentifiersExtractor = elementIdentifiersExtractor;
+        return markUnmatched();
+    }
+
+    public ObjectRelationMatcher<E, I, C, D, K> setElementToKeysMapping(Function<E, Collection<K>> elementToKeysMapping) {
+        this.elementToKeysMapping = elementToKeysMapping;
+        return markUnmatched();
+    }
+
+    public ObjectRelationMatcher<E, I, C, D, K> setManyToMany(boolean manyToMany) {
+        this.manyToMany = manyToMany;
         return markUnmatched();
     }
 

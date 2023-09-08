@@ -6,7 +6,7 @@ import java.util.function.Function;
  * 函数的工具类
  *
  * @author Joshua Sun
- * @since 2023/6/28
+ * @since 1.0.5
  */
 public final class FunctionUtils {
 

@@ -13,6 +13,7 @@ import java.util.function.Function;
  * 宽松的枚举工具类
  * 查找key基于toString，解决了某些enum的属性是Integer，用Long查询不到的情况
  * @author Joshua Sun
+ * @since 1.0.3
  */
 public final class LooseEnumGetter {
 

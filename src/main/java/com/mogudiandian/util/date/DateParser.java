@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  * 这个轮子的好处是线程安全 并且不会抛ParseException 无法解析时返回null
  *          不足在于只要形似时间即可 无法对真实性进行判断
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class DateParser {
 

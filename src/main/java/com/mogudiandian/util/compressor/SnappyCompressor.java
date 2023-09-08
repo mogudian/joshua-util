@@ -9,6 +9,7 @@ import org.xerial.snappy.Snappy;
  * (Java-JNI) https://github.com/xerial/snappy-java
  * (Java-Port) https://github.com/dain/snappy
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class SnappyCompressor implements Compressor {
 

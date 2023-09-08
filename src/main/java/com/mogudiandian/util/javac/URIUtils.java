@@ -7,6 +7,7 @@ import java.net.URI;
 /**
  * URI工具类
  * @author Joshua Sun
+ * @since 1.0.0
  */
 final class URIUtils {
 

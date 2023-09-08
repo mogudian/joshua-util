@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  * JDBC的工具类
  * 可以作为一个简易版的ORM使用
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class JdbcUtils {
 

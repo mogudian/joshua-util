@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * 动态编译期间产生的异常
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class DynamicCompilerException extends Exception {
 

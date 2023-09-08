@@ -10,6 +10,7 @@ import java.security.MessageDigest;
  * 计算MD5
  *
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class MD5 {
 

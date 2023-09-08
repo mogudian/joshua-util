@@ -10,6 +10,7 @@ import java.util.Optional;
  * Java动态编译器
  * 注意：需要运行环境是JDK，不能是JRE(没有tools.jar)
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class DynamicCompiler {
 

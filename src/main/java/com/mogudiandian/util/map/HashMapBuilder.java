@@ -5,6 +5,7 @@ import java.util.HashMap;
 /**
  * 快速构建HashMap
  * @author Joshua Sun
+ * @since 1.0.0
  */
 public final class HashMapBuilder {
 
