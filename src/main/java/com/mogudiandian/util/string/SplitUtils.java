@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.*;
 
 /**
@@ -127,6 +128,28 @@ public final class SplitUtils {
     }
 
     /**
+     * Splits a given string into an array of strings based on a given condition.
+     *
+     * @param string             the string to be split
+     * @param retainedCondition  the condition used to determine which characters are retained in the split
+     * @return an array of strings containing the split substrings
+     */
+    public static String[] splitToArray(String string, Predicate<Character> retainedCondition) {
+        return splitToStream(string, retainedCondition).toArray(String[]::new);
+    }
+
+    /**
+     * Splits a given string into a list of strings based on a given condition.
+     *
+     * @param string             the string to be split
+     * @param retainedCondition  the condition used to determine which characters are retained in the split
+     * @return a list of strings containing the split substrings
+     */
+    public static List<String> splitToList(String string, Predicate<Character> retainedCondition) {
+        return splitToStream(string, retainedCondition).collect(Collectors.toList());
+    }
+
+    /**
      * Splits the given string into an IntStream of integers.
      *
      * @param string the string to be split
@@ -201,6 +224,21 @@ public final class SplitUtils {
                         builder.add(new BigDecimal(segment));
                     }
                 });
+        return builder.build();
+    }
+
+    /**
+     * Splits the given string into a Stream of Strings based on a specified condition.
+     *
+     * @param string            the string to be split
+     * @param retainedCondition the condition to determine which segments are retained
+     * @return a Stream of Strings obtained from the string based on the condition
+     */
+    private static Stream<String> splitToStream(String string, Predicate<Character> retainedCondition) {
+        Stream.Builder<String> builder = Stream.builder();
+        split(string,
+                (ch, segment) -> retainedCondition.test(ch),
+                builder::add);
         return builder.build();
     }
 
