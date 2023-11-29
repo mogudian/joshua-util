@@ -249,6 +249,13 @@ String str = JSON.toJSONString(jsonObject, new LongStringOmitFilter(x));
 #### JacksonUtils Jackson工具类
 
 ### lang
+#### BooleanUtils 布尔工具类，扩展commons-lang3的BooleanUtils
+```java
+// 是否为true或null
+BooleanUtils.isTrueOrNull(b);
+// 是否为flase或null
+BooleanUtils.isFalseOrNull(b);
+```
 #### CompareUtils 比较工具类，支持多参数级联比较，数组内比较，集合内比较
 ```java
 // 是否相同
