@@ -119,6 +119,14 @@ List<XyzExcelDTO> xyzList = excelParser.parse(new FileInputStream(file));
 ```
 
 ### function
+#### BinaryOperators 封装了常用的BinaryOperator
+```java
+list.stream().collect(Collectors.toMap(XxxDTO::getId, XxxDTO::getName, BinaryOperators.useFirst()));
+list.stream().collect(Collectors.toMap(XxxDTO::getId, XxxDTO::getName, BinaryOperators.useLast()));
+list.stream().collect(Collectors.toMap(XxxDTO::getId, XxxDTO::getName, BinaryOperators.useFirstNonNull()));
+list.stream().collect(Collectors.toMap(XxxDTO::getId, XxxDTO::getName, BinaryOperators.useLastNonNull()));
+```
+```
 #### FunctionUtils Function的工具
 ```java
 // 例如 有两个现成的函数分别是把A转为B、把B转为C，那么现在需要一个函数是把A转为C
@@ -128,6 +136,12 @@ Function<A, C> aToC = FunctionUtils.compose(bToC, aToB);
 ```
 #### TriFunction 三个参数的函数
 #### TriPredicate 三个参数的断言
+#### TryCatch 使用函数式编程的方式执行try-catch，对于可忽略的异常降低代码量
+```java
+xxx = tryGet(() -> doSomething());
+xxx = tryGet(() -> tryFunction(), () -> catchFunction());
+xxx = tryGet(() -> tryFunction(), defaultValue);
+```
 
 ### html
 #### HTMLUtils HTML工具类

@@ -4,7 +4,7 @@ package com.mogudiandian.util.lang;
  * 布尔值工具类，扩展了 {@link org.apache.commons.lang3.BooleanUtils} 的功能
  * @see org.apache.commons.lang3.BooleanUtils
  *
- * @author sunbo
+ * @author Joshua Sun
  * @since 2023/11/29
  */
 public final class BooleanUtils extends org.apache.commons.lang3.BooleanUtils {

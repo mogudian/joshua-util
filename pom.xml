@@ -6,7 +6,7 @@
 
     <groupId>com.mogudiandian</groupId>
     <artifactId>joshua-util</artifactId>
-    <version>1.0.12</version>
+    <version>1.0.15</version>
 
     <name>joshua-util</name>
     <description>Joshua's user-friendly utilities</description>
