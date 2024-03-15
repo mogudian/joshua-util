@@ -27,7 +27,7 @@ public final class ExcelParser<T> {
      * @param inputStream 输入流
      * @return 解析后的数据
      */
-    private List<T> parse(InputStream inputStream) {
+    public List<T> parse(InputStream inputStream) {
         return parse(inputStream, false);
     }
 
@@ -37,7 +37,7 @@ public final class ExcelParser<T> {
      * @param noHead 是否没有表头
      * @return 解析后的数据
      */
-    private List<T> parse(InputStream inputStream, boolean noHead) {
+    public List<T> parse(InputStream inputStream, boolean noHead) {
         return parse(inputStream, null, null, noHead);
     }
 
@@ -47,7 +47,7 @@ public final class ExcelParser<T> {
      * @param sheetIndex 表（sheet）的索引 从0开始
      * @return 解析后的数据
      */
-    private List<T> parse(InputStream inputStream, Integer sheetIndex) {
+    public List<T> parse(InputStream inputStream, Integer sheetIndex) {
         return parse(inputStream, sheetIndex, false);
     }
 
@@ -57,7 +57,7 @@ public final class ExcelParser<T> {
      * @param sheetName 表（sheet）的名称
      * @return 解析后的数据
      */
-    private List<T> parse(InputStream inputStream, String sheetName) {
+    public List<T> parse(InputStream inputStream, String sheetName) {
         return parse(inputStream, sheetName, false);
     }
 
@@ -68,7 +68,7 @@ public final class ExcelParser<T> {
      * @param noHead 是否没有表头
      * @return 解析后的数据
      */
-    private List<T> parse(InputStream inputStream, Integer sheetIndex, boolean noHead) {
+    public List<T> parse(InputStream inputStream, Integer sheetIndex, boolean noHead) {
         return parse(inputStream, null, sheetIndex, noHead);
     }
 
@@ -79,7 +79,7 @@ public final class ExcelParser<T> {
      * @param noHead 是否没有表头
      * @return 解析后的数据
      */
-    private List<T> parse(InputStream inputStream, String sheetName, boolean noHead) {
+    public List<T> parse(InputStream inputStream, String sheetName, boolean noHead) {
         return parse(inputStream, sheetName, null, noHead);
     }
 
@@ -91,7 +91,7 @@ public final class ExcelParser<T> {
      * @param noHead 是否没有表头
      * @return 解析后的数据
      */
-    private List<T> parse(InputStream inputStream, String sheetName, Integer sheetIndex, boolean noHead) {
+    public List<T> parse(InputStream inputStream, String sheetName, Integer sheetIndex, boolean noHead) {
         BufferedExcelListener<T> listener = new BufferedExcelListener<>();
 
         ExcelReaderBuilder builder = EasyExcel.read(inputStream, clazz, listener);

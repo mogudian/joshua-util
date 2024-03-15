@@ -353,6 +353,26 @@ String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum
 String description = LooseEnumGetter.getEnumPropertyValue(XxxEnum.class, XxxEnum::getStatus, 4, XxxEnum::getDescription, "未知");
 // 返回 未知
 ```
+#### Range 范围
+```java
+Range<Integer> range = new Range<>(1, true, 10, true);
+range.contains(0); // false
+range.contains(1); // true
+range.contains(5); // true
+range.contains(10); // true
+range.contains(11); // false
+range.hasIntersection(new Range<>(-10, true, 0, true)); // false
+range.hasIntersection(new Range<>(-10, true, 1, true)); // true
+range.hasIntersection(new Range<>(-10, true, 2, true)); // true
+range.hasIntersection(new Range<>(1, true, 10, true)); // true
+range.hasIntersection(new Range<>(2, true, 9, true)); // true
+range.hasIntersection(new Range<>(9, true, 15, true)); // true
+range.hasIntersection(new Range<>(10, true, 15, true)); // true
+range.hasIntersection(new Range<>(11, true, 15, true)); // false
+range.hasIntersection(new Range<>(-10, true, 1, false)); // false
+range.hasIntersection(new Range<>(10, false, 15, false)); // false
+range.hasIntersection(new Range<>(-10, true, 15, true)); // true
+```
 #### WeakTypeUtils 弱类型工具类
 ```java
 WeakTypeUtils.toBoolean(null); // false
