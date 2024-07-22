@@ -391,7 +391,13 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
             identifierStream = identifierList.stream();
         } else {
             // 不使用缓存的话 直接提取所有标识符
-            identifierStream = elementStream.map(elementIdentifierExtractor);
+            if (manyToMany) {
+                // 多对多
+                identifierStream = elementStream.map(elementIdentifiersExtractor)
+                                                .flatMap(Collection::stream);
+            } else {
+                identifierStream = elementStream.map(elementIdentifierExtractor);
+            }
         }
 
         // 待查询的标识符集合
@@ -501,19 +507,15 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
                                                                .collect(Collectors.groupingBy(dataKeyGenerator));
                     elementStream.filter(element -> !keyDataListMap.containsKey(element))
                                  .forEach(element -> {
+                                     // keys 1 2 3
                                      Collection<K> collection = elementToKeysMapping.apply(element);
                                      for (K key : collection) {
                                          List<D> list = keyDataListMap.get(key);
-                                         elementDataListMap.put(element, list);
-                                     }
-                                     K key = elementToKeyMapping.apply(element);
-                                     List<D> list = keyDataListMap.get(key);
-                                     elementDataListMap.put(element, list);
-                                     if (useCache && list != null && (!list.isEmpty() || !emptyAsUnmatched)) {
-                                         putListToCache(elementIdentifierExtractor.apply(element), list);
+                                         if (list != null) {
+                                             elementDataListMap.computeIfAbsent(element, k -> new ArrayList<>()).addAll(list);
+                                         }
                                      }
                                  });
-
                 } else if (oneToMany) {
                     // 一对多
                     Map<K, List<D>> keyDataListMap = dataStream.filter(Objects::nonNull)
@@ -541,7 +543,6 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
                                      }
                                  });
                 }
-
             }
         }
 
@@ -766,7 +767,15 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
     }
 
     /**
-     * 处理所有一对多的关系
+     * 处理已匹配的一对多的关系
+     * @param matchedProcessor 已匹配到关系的处理器
+     */
+    public void processOneToMany(BiConsumer<E, List<D>> matchedProcessor) {
+        processOneToMany(matchedProcessor, null);
+    }
+
+    /**
+     * 处理所有多对多的关系
      * @param matchedProcessor 已匹配到关系的处理器
      * @param unmatchedProcessor 未匹配到关系的处理器
      */
@@ -787,11 +796,11 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
     }
 
     /**
-     * 处理已匹配的一对多的关系
+     * 处理所有多对多的关系
      * @param matchedProcessor 已匹配到关系的处理器
      */
-    public void processOneToMany(BiConsumer<E, List<D>> matchedProcessor) {
-        processOneToMany(matchedProcessor, null);
+    public void processManyToMany(BiConsumer<E, List<D>> matchedProcessor) {
+        processManyToMany(matchedProcessor, null);
     }
 
     private ObjectRelationMatcher<E, I, C, D, K> markUnmatched() {
