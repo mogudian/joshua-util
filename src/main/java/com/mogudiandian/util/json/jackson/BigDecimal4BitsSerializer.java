@@ -20,7 +20,7 @@ public class BigDecimal4BitsSerializer extends JsonSerializer<BigDecimal> {
         if (value == null) {
             gen.writeNull();
         } else {
-            gen.writeNumber(value.setScale(4, RoundingMode.HALF_UP).stripTrailingZeros());
+            gen.writeString(value.setScale(4, RoundingMode.HALF_UP).toPlainString());
         }
     }
 

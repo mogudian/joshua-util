@@ -259,7 +259,15 @@ String str = JSON.toJSONString(jsonObject, new LongStringOmitFilter(x));
 
 ### json.jackson
 #### BigDecimal2BitsSerializer BigDecimal使用jackson序列化保留两位小数
+```java
+@JsonSerialize(using = BigDecimal2BitsSerializer.class)
+private BigDecimal amount;
+```
 #### BigDecimal4BitsSerializer BigDecimal使用jackson序列化保留四位小数
+```java
+@JsonSerialize(using = BigDecimal4BitsSerializer.class)
+private BigDecimal amount;
+```
 #### JacksonUtils Jackson工具类
 
 ### lang
