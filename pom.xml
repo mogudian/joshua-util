@@ -6,7 +6,7 @@
 
     <groupId>com.mogudiandian</groupId>
     <artifactId>joshua-util</artifactId>
-    <version>1.0.19</version>
+    <version>1.0.22</version>
 
     <name>joshua-util</name>
     <description>Joshua's user-friendly utilities</description>
@@ -52,7 +52,7 @@
         <tika.version>2.6.0</tika.version>
         <easyexcel.version>2.2.7</easyexcel.version>
         <zstd.version>1.5.2-4</zstd.version>
-        <snappy.version>1.1.10.1</snappy.version>
+        <snappy.version>1.1.10.4</snappy.version>
         <servlet-api.version>3.1.0</servlet-api.version>
     </properties>
 

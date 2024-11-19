@@ -12,10 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -97,6 +94,8 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
      */
     private static final int EXECUTOR_QUEUE_SIZE = 1024;
 
+    private static final BinaryOperator<?> DEFAULT_MAP_MERGE_FUNCTION = (x, y) -> y;
+
     /**
      * 通用缓存(name, identifier) -> data
      */
@@ -131,6 +130,11 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
      * 将标识符聚合成什么集合 要看查询新集合的参数是什么 可能是List或Set
      */
     private Collector<I, ?, C> identifierCollector;
+
+    /**
+     * 批量查询新集合所有元素的方法 通常用于字典类数据的查询 一次性查出所有的数据
+     */
+    private Supplier<? extends Collection<D>> batchQueryAllMethod;
 
     /**
      * 批量查询新集合的方法 如果有批量的查询方法 优先使用批量查询
@@ -182,6 +186,11 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
      * 源集合的元素映射到新集合唯一键的方法
      */
     private Function<E, Collection<K>> elementToKeysMapping;
+
+    /**
+     * 源集合的元素映射到新集合所有键 只能用于笛卡尔积场景或配合扁平处理
+     */
+    private boolean elementToAllKeys = false;
 
     /**
      * 源集合和新集合的关系是否为一对多 默认为false（一对一）
@@ -264,13 +273,13 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
     private void validate() {
         Objects.requireNonNull(elements, "源集合不能为空");
         if (manyToMany) {
-            Objects.requireNonNull(elementIdentifiersExtractor, "标识符提取器不能为空");
+            Objects.requireNonNull(elementIdentifiersExtractor, "标识符集合提取器不能为空");
         } else {
             Objects.requireNonNull(elementIdentifierExtractor, "标识符提取器不能为空");
         }
 
         // 只有设置了批量查询方法时才需要指定collector（要保持和批量查询方法的参数一致）
-        if (batchQueryMethod != null) {
+        if (batchQueryMethod != null || batchQueryAllMethod != null) {
             Objects.requireNonNull(identifierCollector, "批量查询模式下标识聚合器不能为空");
         } else {
             // 没有批量查询的方法按照单个查询方法来
@@ -290,7 +299,9 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
         Objects.requireNonNull(dataKeyGenerator, "新集合唯一键生成器不能为空");
 
         if (manyToMany) {
-            Objects.requireNonNull(elementToKeysMapping, "源集合到唯一键的映射关系不能为空");
+            if (!elementToAllKeys) {
+                Objects.requireNonNull(elementToKeysMapping, "源集合到唯一键集合的映射关系不能为空");
+            }
         } else {
             Objects.requireNonNull(elementToKeyMapping, "源集合到唯一键的映射关系不能为空");
         }
@@ -303,17 +314,16 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public ObjectRelationMatcher<E, I, C, D, K> setIdentifierCollectorType(Class<? extends Collection> type) {
         Objects.requireNonNull(type, "标识收集器类型不能设置为null");
         if (List.class.isAssignableFrom(type)) {
-            this.setIdentifierCollector((Collector<I, ?, C>) Collectors.toList());
-        } else if (Set.class.isAssignableFrom(type)) {
-            this.setIdentifierCollector((Collector<I, ?, C>) Collectors.toSet());
-        } else {
-            throw new RuntimeException("无法处理的标识收集器类型: " + type);
+            return setIdentifierCollector((Collector<I, ?, C>) Collectors.toList());
         }
-        return this;
+        if (Set.class.isAssignableFrom(type)) {
+            return setIdentifierCollector((Collector<I, ?, C>) Collectors.toSet());
+        }
+        throw new RuntimeException("无法处理的标识收集器类型: " + type);
     }
 
     /**
@@ -326,7 +336,7 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
         // 源集合的元素和新集合的元素对应关系（一对一）
         Map<E, D> elementDataMap;
 
-        // 源集合的元素和新集合的元素对应关系（一对多）
+        // 源集合的元素和新集合的元素对应关系（一对多、多对多）
         Map<E, List<D>> elementDataListMap;
 
         if (manyToMany) {
@@ -420,7 +430,9 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
                                                  .orElse(Collections.emptyList());
                     } else {
                         // 如果需要查询多个 那么看是否配置了批量查询方法 如果配置了则优先使用批量查询方法
-                        if (batchQueryMethod != null) {
+                        if (batchQueryAllMethod != null) {
+                            dataCollection = batchQueryAllMethod.get();
+                        } else if (batchQueryMethod != null) {
                             // 如果没有配置批量最大可查条数 直接调用批量查询方法
                             if (maxBatchQuerySize <= 0) {
                                 dataCollection = batchQueryMethod.apply(identifierCollection);
@@ -503,32 +515,46 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
 
                 if (manyToMany) {
                     // 多对多
-                    Map<K, List<D>> keyDataListMap = dataStream.filter(Objects::nonNull)
-                                                               .collect(Collectors.groupingBy(dataKeyGenerator));
-                    elementStream.filter(element -> !keyDataListMap.containsKey(element))
-                                 .forEach(element -> {
-                                     // keys 1 2 3
-                                     Collection<K> collection = elementToKeysMapping.apply(element);
-                                     for (K key : collection) {
-                                         List<D> list = keyDataListMap.get(key);
-                                         if (list != null) {
-                                             elementDataListMap.computeIfAbsent(element, k -> new ArrayList<>()).addAll(list);
+                    if (elementToAllKeys) {
+                        // 全量笛卡尔积
+                        List<D> dataList = dataStream.collect(Collectors.toList());
+                        elementStream.forEach(element -> elementDataListMap.put(element, dataList));
+                    } else {
+                        // 按照key分组
+                        Map<K, List<D>> keyDataListMap = dataStream.filter(Objects::nonNull)
+                                                                   .collect(Collectors.groupingBy(dataKeyGenerator));
+                        elementStream.forEach(element -> {
+                                         // keys 1 2 3
+                                         Collection<K> collection = elementToKeysMapping.apply(element);
+                                         for (K key : collection) {
+                                             List<D> list = keyDataListMap.get(key);
+                                             if (list != null) {
+                                                 elementDataListMap.computeIfAbsent(element, k -> new ArrayList<>()).addAll(list);
+                                             }
                                          }
-                                     }
-                                 });
+                                     });
+                    }
                 } else if (oneToMany) {
                     // 一对多
-                    Map<K, List<D>> keyDataListMap = dataStream.filter(Objects::nonNull)
-                                                               .collect(Collectors.groupingBy(dataKeyGenerator));
-                    elementStream.filter(element -> !keyDataListMap.containsKey(element))
-                                 .forEach(element -> {
-                                     K key = elementToKeyMapping.apply(element);
-                                     List<D> list = keyDataListMap.get(key);
-                                     elementDataListMap.put(element, list);
-                                     if (useCache && list != null && (!list.isEmpty() || !emptyAsUnmatched)) {
-                                         putListToCache(elementIdentifierExtractor.apply(element), list);
-                                     }
-                                 });
+                    if (elementToAllKeys) {
+                        // 全量笛卡尔积 不走缓存
+                        List<D> dataList = dataStream.collect(Collectors.toList());
+                        elementStream.forEach(element -> elementDataListMap.put(element, dataList));
+                    } else {
+                        // 过滤缓存中已存在的
+                        // 按照key分组
+                        Map<K, List<D>> keyDataListMap = dataStream.filter(Objects::nonNull)
+                                                                   .collect(Collectors.groupingBy(dataKeyGenerator));
+                        elementStream.filter(element -> !elementDataListMap.containsKey(element))
+                                     .forEach(element -> {
+                                         K key = elementToKeyMapping.apply(element);
+                                         List<D> list = keyDataListMap.get(key);
+                                         elementDataListMap.put(element, list);
+                                         if (useCache && list != null && (!list.isEmpty() || !emptyAsUnmatched)) {
+                                             putListToCache(elementIdentifierExtractor.apply(element), list);
+                                         }
+                                     });
+                    }
                 } else {
                     // 一对一
                     Map<K, D> keyDataMap = dataStream.filter(Objects::nonNull)
@@ -726,7 +752,7 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
             throw new RuntimeException("需要先调用match方法");
         }
         if (oneToMany) {
-            throw new RuntimeException("一对多关系应该调用getOneToManyRelations方法");
+            throw new RuntimeException("一对多关系应该调用processOneToMany方法");
         }
         oneToOneMap.forEach((k, v) -> {
             if (v != null) {
@@ -755,7 +781,7 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
             throw new RuntimeException("需要先调用match方法");
         }
         if (!oneToMany) {
-            throw new RuntimeException("一对一关系应该调用getOneToOneRelations方法");
+            throw new RuntimeException("一对一关系应该调用processOneToOne方法，多对多关系应该调用processManyToMany方法");
         }
         oneToManyMap.forEach((k, v) -> {
             if (v != null && (!v.isEmpty() || !emptyAsUnmatched)) {
@@ -784,7 +810,7 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
             throw new RuntimeException("需要先调用match方法");
         }
         if (!manyToMany) {
-            throw new RuntimeException("一对一关系应该调用getOneToOneRelations方法");
+            throw new RuntimeException("一对一关系应该调用processOneToOne方法，一对多关系应该调用processOneToMany方法");
         }
         manyToManyMap.forEach((k, v) -> {
             if (v != null && (!v.isEmpty() || !emptyAsUnmatched)) {
@@ -801,6 +827,66 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
      */
     public void processManyToMany(BiConsumer<E, List<D>> matchedProcessor) {
         processManyToMany(matchedProcessor, null);
+    }
+
+    /**
+     * 扁平的处理所有多对多的关系
+     * @param matchedProcessor 已匹配到关系的处理器
+     * @param unmatchedProcessor 未匹配到关系的处理器
+     */
+    public void processManyToManyFlatly(BiConsumer<E, Map<K, List<D>>> matchedProcessor, Consumer<E> unmatchedProcessor) {
+        if (!matched) {
+            throw new RuntimeException("需要先调用match方法");
+        }
+        if (!manyToMany) {
+            throw new RuntimeException("一对一关系应该调用processOneToOne方法，一对多关系应该调用processOneToMany方法");
+        }
+        manyToManyMap.forEach((k, v) -> {
+            if (v != null && (!v.isEmpty() || !emptyAsUnmatched)) {
+                Map<K, List<D>> map = v.stream().collect(Collectors.groupingBy(dataKeyGenerator));
+                matchedProcessor.accept(k, map);
+            } else if (unmatchedProcessor != null) {
+                unmatchedProcessor.accept(k);
+            }
+        });
+    }
+
+    /**
+     * 扁平的处理所有多对多的关系
+     * @param matchedProcessor 已匹配到关系的处理器
+     */
+    public void processManyToManyFlatly(BiConsumer<E, Map<K, List<D>>> matchedProcessor) {
+        processManyToManyFlatly(matchedProcessor, null);
+    }
+
+    /**
+     * 扁平的处理所有多对一的关系
+     * @param matchedProcessor 已匹配到关系的处理器
+     * @param unmatchedProcessor 未匹配到关系的处理器
+     */
+    public void processManyToOneFlatly(BiConsumer<E, Map<K, D>> matchedProcessor, Consumer<E> unmatchedProcessor) {
+        if (!matched) {
+            throw new RuntimeException("需要先调用match方法");
+        }
+        if (!manyToMany) {
+            throw new RuntimeException("一对一关系应该调用processOneToOne方法，一对多关系应该调用processOneToMany方法");
+        }
+        manyToManyMap.forEach((k, v) -> {
+            if (v != null && (!v.isEmpty() || !emptyAsUnmatched)) {
+                Map<K, D> map = v.stream().collect(Collectors.toMap(dataKeyGenerator, Function.identity(), defaultMapMerger()));
+                matchedProcessor.accept(k, map);
+            } else if (unmatchedProcessor != null) {
+                unmatchedProcessor.accept(k);
+            }
+        });
+    }
+
+    /**
+     * 扁平的处理所有多对一的关系
+     * @param matchedProcessor 已匹配到关系的处理器
+     */
+    public void processManyToOneFlatly(BiConsumer<E, Map<K, D>> matchedProcessor) {
+        processManyToOneFlatly(matchedProcessor, null);
     }
 
     private ObjectRelationMatcher<E, I, C, D, K> markUnmatched() {
@@ -825,6 +911,11 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
 
     public ObjectRelationMatcher<E, I, C, D, K> setIdentifierCollector(Collector<I, ?, C> identifierCollector) {
         this.identifierCollector = identifierCollector;
+        return markUnmatched();
+    }
+
+    public ObjectRelationMatcher<E, I, C, D, K> setBatchQueryAllMethod(Supplier<? extends Collection<D>> batchQueryAllMethod) {
+        this.batchQueryAllMethod = batchQueryAllMethod;
         return markUnmatched();
     }
 
@@ -873,6 +964,12 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
         return markUnmatched();
     }
 
+    @SuppressWarnings("unchecked")
+    public ObjectRelationMatcher<E, I, C, D, K> setElementToKeyMappingByIdentifierExtractor() {
+        this.elementToKeyMapping = (Function<E, K>) this.elementIdentifierExtractor;
+        return markUnmatched();
+    }
+
     public ObjectRelationMatcher<E, I, C, D, K> setOneToMany(boolean oneToMany) {
         this.oneToMany = oneToMany;
         return markUnmatched();
@@ -913,6 +1010,11 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
         return markUnmatched();
     }
 
+    public ObjectRelationMatcher<E, I, C, D, K> setElementToAllKeys(boolean elementToAllKeys) {
+        this.elementToAllKeys = elementToAllKeys;
+        return markUnmatched();
+    }
+
     public ObjectRelationMatcher<E, I, C, D, K> setManyToMany(boolean manyToMany) {
         this.manyToMany = manyToMany;
         return markUnmatched();
@@ -932,6 +1034,11 @@ public final class ObjectRelationMatcher<E, I, C extends Collection<I>, D, K> {
             parallelQueryPool.shutdown();
         } catch (Exception ignored) {
         }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private BinaryOperator<D> defaultMapMerger() {
+        return (BinaryOperator) DEFAULT_MAP_MERGE_FUNCTION;
     }
 
     @Slf4j
