@@ -26,7 +26,7 @@ import java.util.stream.IntStream;
 @NotThreadSafe
 public final class RandomKCollector<T> implements Collector<T, PriorityQueue<Map.Entry<Double, T>>, List<T>> {
 
-    private int k;
+    private final int k;
 
     private RandomKCollector(int k) {
         if (k <= 0) {

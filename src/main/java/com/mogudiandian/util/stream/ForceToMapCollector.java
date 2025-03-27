@@ -29,12 +29,11 @@ import java.util.stream.Collector;
  */
 public final class ForceToMapCollector<T, K, V> implements Collector<T, Map<K, V>, Map<K, V>> {
 
-	private Function<? super T, ? extends K> keyMapper;
+	private final Function<? super T, ? extends K> keyMapper;
 
-	private Function<? super T, ? extends V> valueMapper;
+	private final Function<? super T, ? extends V> valueMapper;
 
-	public ForceToMapCollector(Function<? super T, ? extends K> keyMapper,
-			Function<? super T, ? extends V> valueMapper) {
+	public ForceToMapCollector(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
 		super();
 		this.keyMapper = keyMapper;
 		this.valueMapper = valueMapper;
@@ -42,11 +41,12 @@ public final class ForceToMapCollector<T, K, V> implements Collector<T, Map<K, V
 
 	/**
 	 * 创建ForceToMap收集器实例
-	 * @param keyMapper key的映射器
+	 *
+	 * @param keyMapper   key的映射器
 	 * @param valueMapper value的映射器
-	 * @param <T> stream中元素的类型
-	 * @param <K> key的类型
-	 * @param <V> value的类型
+	 * @param <T>         stream中元素的类型
+	 * @param <K>         key的类型
+	 * @param <V>         value的类型
 	 * @return ForceToMapCollector收集器
 	 */
 	public static <T, K, V> ForceToMapCollector<T, K, V> collect(Function<T, K> keyMapper, Function<T, V> valueMapper) {
@@ -54,14 +54,47 @@ public final class ForceToMapCollector<T, K, V> implements Collector<T, Map<K, V
 	}
 
 	/**
-	 * 创建ForceToMap收集器实例 收集后map的value类型为流的类型
+	 * 创建ForceToMap收集器实例，收集后map的value类型为流的类型
+	 *
 	 * @param keyMapper key的映射器
-	 * @param <T> stream中元素的类型
-	 * @param <K> key的类型
+	 * @param <T>       stream中元素的类型
+	 * @param <K>       key的类型
 	 * @return ForceToMapCollector收集器
 	 */
 	public static <T, K> ForceToMapCollector<T, K, T> collect(Function<T, K> keyMapper) {
 		return new ForceToMapCollector<>(keyMapper, Function.identity());
+	}
+
+	/**
+	 * 创建ForceToMap收集器实例，方便直接把历史代码的Collectors直接替换为ForceToMapCollector
+	 *
+	 * @since 1.0.23
+	 *
+	 * @param keyMapper   key的映射器
+	 * @param valueMapper value的映射器
+	 * @param <T>         stream中元素的类型
+	 * @param <K>         key的类型
+	 * @param <V>         value的类型
+	 * @return ForceToMapCollector收集器
+	 * @see #collect(Function, Function)
+	 */
+	public static <T, K, V> ForceToMapCollector<T, K, V> toMap(Function<T, K> keyMapper, Function<T, V> valueMapper) {
+		return collect(keyMapper, valueMapper);
+	}
+
+	/**
+	 * 创建ForceToMap收集器实例，收集后map的value类型为流的类型，方便直接把历史代码的Collectors直接替换为ForceToMapCollector
+	 *
+	 * @since 1.0.23
+	 *
+	 * @param keyMapper key的映射器
+	 * @param <T>       stream中元素的类型
+	 * @param <K>       key的类型
+	 * @return ForceToMapCollector收集器
+	 * @see #collect(Function)
+	 */
+	public static <T, K> ForceToMapCollector<T, K, T> toMap(Function<T, K> keyMapper) {
+		return collect(keyMapper);
 	}
 
 	@Override

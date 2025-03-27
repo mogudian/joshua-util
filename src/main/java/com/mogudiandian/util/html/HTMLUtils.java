@@ -108,7 +108,7 @@ public final class HTMLUtils {
             throw new IllegalArgumentException("Length must be positive");
         }
 
-        if (html.length() == 0) {
+        if (html.isEmpty()) {
             return html;
         }
 
@@ -194,5 +194,4 @@ public final class HTMLUtils {
 
         return stringBuilder.toString();
     }
-
 }
