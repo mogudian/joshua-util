@@ -210,6 +210,13 @@ Date start = ..., end = ...;
 List<XxxEntity> xxxList = JdbcUtils.selectList(XxxEntity.class, dataSource, sql, start, end);
 ```
 
+#### Mybatis JDBC的工具类
+```java
+SqlSessionFactory sqlSessionFactory = ...;
+List<Xyz> xyzList = ...;
+int rows = MybatisUtils.batchUpdate(sqlSessionFactory, "com.xxx.yyy.zzz.mapper.XyzMapper.batchUpdate", 100, xyzList, false);
+```
+
 ### json.fastjson
 #### FastJsonUtils FastJSON的工具类
 ```java
@@ -577,16 +584,17 @@ matcher.setElements(comments)
 |----------------------|----------------|-----------------------|
 | spring               | 5.2.25.RELEASE | 只用到了里面集成的cglib        |
 | fastjson             | 1.2.83         |                       |
-| jackson              | 2.14.3         |                       |
+| jackson              | 2.15.0         |                       |
 | commons-lang3        | 3.11           |                       |
 | commons-collections4 | 4.4            |                       |
 | guava                | 32.0.1.0-jre   |                       |
 | slf4j                | 1.7.30         |                       |
-| hibernate-validator  | 6.1.6.Final    |                       |
-| tika                 | 2.6.0          | 只用到了预测文件类型            |
+| hibernate-validator  | 6.2.5.Final    |                       |
+| tika                 | 2.9.4          | 只用到了预测文件类型            |
 | easyexcel            | 2.2.7          | alibaba出品的简易excel解析工具 |
 | zstd                 | 1.5.2-4        | google出品的压缩工具         |
 | snappy               | 1.1.10.1       | facebook出品的压缩工具       |
 | servlet-api          | 3.1.0          | servlet相关依赖           |
 | lombok               | 1.18.16        |                       |
+| mybatis              | 3.5.10         |                       |
 

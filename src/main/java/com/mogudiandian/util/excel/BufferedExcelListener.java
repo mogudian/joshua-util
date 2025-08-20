@@ -14,7 +14,9 @@ import java.util.Optional;
  * @param <T> 数据类型
  * @author Joshua Sun
  * @since 1.0.0
+ * @deprecated 目前使用的easyexcel停止维护了，后续换成其他的工具
  */
+@Deprecated
 public class BufferedExcelListener<T> extends AnalysisEventListener<T> {
 
     /**

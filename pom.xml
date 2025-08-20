@@ -6,7 +6,7 @@
 
     <groupId>com.mogudiandian</groupId>
     <artifactId>joshua-util</artifactId>
-    <version>1.0.23</version>
+    <version>1.0.24</version>
 
     <name>joshua-util</name>
     <description>Joshua's user-friendly utilities</description>
@@ -42,18 +42,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <fastjson.version>1.2.83</fastjson.version>
-        <jackson.version>2.14.3</jackson.version>
+        <jackson.version>2.15.0</jackson.version>
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <guava.version>32.0.1-jre</guava.version>
         <spring.version>5.2.25.RELEASE</spring.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <hibernate-validator.version>6.1.6.Final</hibernate-validator.version>
-        <tika.version>2.6.0</tika.version>
+        <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
+        <tika.version>2.9.4</tika.version>
         <easyexcel.version>2.2.7</easyexcel.version>
         <zstd.version>1.5.2-4</zstd.version>
         <snappy.version>1.1.10.4</snappy.version>
         <servlet-api.version>3.1.0</servlet-api.version>
+        <mybatis.version>3.5.10</mybatis.version>
     </properties>
 
     <dependencies>
@@ -61,30 +62,35 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>${commons-collections4.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>${spring.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -97,35 +103,41 @@
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
             <version>${easyexcel.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
             <version>${zstd.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
             <version>${snappy.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
             <version>${tika.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -140,6 +152,13 @@
             <artifactId>lombok</artifactId>
             <version>1.18.16</version>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

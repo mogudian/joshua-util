@@ -10,7 +10,9 @@ import java.util.List;
  * Excel解析器
  * @author Joshua Sun
  * @since 1.0.0
+ * @deprecated 目前使用的easyexcel停止维护了，后续换成其他的工具
  */
+@Deprecated
 public final class ExcelParser<T> {
 
     /**
